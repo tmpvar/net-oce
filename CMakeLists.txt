@@ -1,27 +1,34 @@
 cmake_minimum_required(VERSION 3.0)
 project(OCE-experiments)
 
-# add_subdirectory(../oce "${CMAKE_CURRENT_BINARY_DIR}/oce")
+set(PROJECT_BINARY_DIR ${CMAKE_SOURCE_DIR}/out)
+set(CMAKE_BINARY_DIR ${CMAKE_SOURCE_DIR}/out)
+set(CMAKE_CURRENT_BINARY_DIR ${CMAKE_BINARY_DIR})
 
-# include(../oce/CMakeLists.txt)
-# include_directories(../oce/inc ../oce/src ../oce/src/Standard ../oce/src/TCollection)
+set(EXECUTABLE_OUTPUT_PATH ${CMAKE_BINARY_DIR}/bin)
 
-add_executable(net-oce bottle.cpp main.cpp transport/tcp.cpp)
-
-find_package(OCE)
-if (OCE_FOUND)
-  include_directories(${OCE_INCLUDE_DIRS})
-  target_link_libraries (net-oce ${OCE_LIBRARIES})
-endif (OCE_FOUND)
-
-find_package(Protobuf)
-if (PROTOBUF_FOUND)
-  include_directories(${PROTOBUF_INCLUDE_DIRS})
-  target_link_libraries (net-oce ${PROTOBUF_LIBRARIES})
-endif (PROTOBUF_FOUND)
-
-target_link_libraries (net-oce uv)
 find_path(LIBUV_INCLUDE_DIR uv.h)
+find_package(OCE)
+find_package(Protobuf)
 
-include_directories(${LIBUV_INCLUDE_DIR})
+include_directories(
+  ${OCE_INCLUDE_DIRS}
+  ${PROTOBUF_INCLUDE_DIRS}
+  ${LIBUV_INCLUDE_DIR}
+  ${CMAKE_BINARY_DIR}
+)
+
+file(GLOB ProtoFiles "${CMAKE_CURRENT_SOURCE_DIR}/protocol/*.proto")
+protobuf_generate_cpp(ProtoSources ProtoHeaders ${ProtoFiles})
+
+add_executable(
+  net-oce
+#  bottle.cpp
+  main.cpp
+#  transport/tcp.cpp
+  ${ProtoHeaders}
+  ${ProtoSources}
+)
+
+target_link_libraries (net-oce ${OCE_LIBRARIES} ${PROTOBUF_LIBRARIES} uv)
 
