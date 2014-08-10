@@ -7,7 +7,7 @@ var messages = protobuf('../protocol/test.proto');
 
 var buf = messages.Person.encode({
   id: 1,
-  name: "Elijah",
+  name: Array(2).join("test"),
   email: "tmpvar@gmail"
 });
 
