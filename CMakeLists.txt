@@ -23,9 +23,8 @@ protobuf_generate_cpp(ProtoSources ProtoHeaders ${ProtoFiles})
 
 add_executable(
   net-oce
-#  bottle.cpp
   main.cpp
-#  transport/tcp.cpp
+  editor.cpp
   ${ProtoHeaders}
   ${ProtoSources}
 )
