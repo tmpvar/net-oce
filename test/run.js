@@ -2,20 +2,17 @@ var fs = require('fs');
 var path = require('path');
 var protobuf = require('protocol-buffers/require');
 
-var messages = protobuf('../protocol/test.proto');
+var req = protobuf('../protocol/oce.proto').NetOCE_Request;
 
-
-var buf = messages.Person.encode({
-  id: 1,
-  name: Array(2).join("test"),
-  email: "tmpvar@gmail"
+var buf = req.encode({
+  method : "hello",
+  arguments : [{
+    type: 1,
+    double_value : Math.PI
+  }, {
+    type : 14,
+    string_value : "hello world"
+  }]
 });
 
-
-var prefix = new Buffer(4);
-prefix.writeUInt32LE(buf.length, 0);
-
-// TODO: message type for instantiation
-
-process.stdout.write(prefix);
 process.stdout.write(buf.toString('binary'));

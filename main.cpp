@@ -2,7 +2,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "test.pb.h"
+#include "oce.pb.h"
 
 #include <google/protobuf/io/zero_copy_stream_impl.h>
 #include <google/protobuf/io/coded_stream.h>
@@ -24,12 +24,9 @@ void read_stdin(uv_stream_t *stream, ssize_t nread, uv_buf_t buffer) {
   //       see: http://stackoverflow.com/questions/9496101/protocol-buffer-over-socket-in-c
 
   if (nread > -1) {
-    if (packet_size == 0) {
-      memcpy(&packet_size, buffer.base, 4);
+    if (buffer.base) {
 
-    } else {
-
-      Person p;
+      NetOCE_Request p;
 
       io::ArrayInputStream arr(buffer.base, nread);
       io::CodedInputStream input(&arr);
@@ -38,10 +35,7 @@ void read_stdin(uv_stream_t *stream, ssize_t nread, uv_buf_t buffer) {
 
       printf("result: \n%s", p.DebugString().c_str());
 
-    }
-
-    // TODO: only free after expending the entire buffer
-    if (buffer.base) {
+      // TODO: only free after expending the entire buffer
       free(buffer.base);
     }
   } else {
