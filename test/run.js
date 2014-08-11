@@ -6,6 +6,7 @@ var req = protobuf('../protocol/oce.proto').NetOCE_Request;
 
 var buf = req.encode({
   method : "hello",
+  seq: 1,
   arguments : [{
     type: 1,
     double_value : Math.PI

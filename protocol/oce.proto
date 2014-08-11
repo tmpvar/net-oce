@@ -17,26 +17,33 @@ enum NetOCE_ArgumentType {
 }
 
 message NetOCE_Argument {
-  required NetOCE_ArgumentType type = 3;
+  required NetOCE_ArgumentType type = 23;
 
-  optional double double_value = 4;
-  optional float float_value = 5;
-  optional int32 int32_value = 6;
-  optional int64 int64_value = 7;
-  optional uint32 uint32_value = 8;
-  optional uint64 uint64_value = 9;
-  optional sint32 sint32_value = 10;
-  optional sint64 sint64_value = 11;
-  optional fixed32 fixed32_value = 12;
-  optional fixed64 fixed64_value = 13;
-  optional sfixed32 sfixed32_value = 14;
-  optional sfixed64 sfixed64_value = 15;
-  optional bool bool_value = 16;
-  optional string string_value = 17;
-  optional bytes bytes_value = 18;
+  optional double   double_value   = 24;
+  optional float    float_value    = 25;
+  optional int32    int32_value    = 26;
+  optional int64    int64_value    = 27;
+  optional uint32   uint32_value   = 28;
+  optional uint64   uint64_value   = 29;
+  optional sint32   sint32_value   = 30;
+  optional sint64   sint64_value   = 31;
+  optional fixed32  fixed32_value  = 32;
+  optional fixed64  fixed64_value  = 33;
+  optional sfixed32 sfixed32_value = 34;
+  optional sfixed64 sfixed64_value = 35;
+  optional bool     bool_value     = 36;
+  optional string   string_value   = 37;
+  optional bytes    bytes_value    = 38;
 }
 
 message NetOCE_Request {
-  required string method = 1;
-  repeated NetOCE_Argument arguments = 2;
+  required string          method    = 1;
+  required uint32          seq       = 2;
+  optional uint32          id        = 3;
+  repeated NetOCE_Argument arguments = 4;
+}
+
+message NetOCE_Response {
+  required uint32          seq       = 12;
+  repeated NetOCE_Argument arguments = 14;
 }
