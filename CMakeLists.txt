@@ -12,6 +12,7 @@ find_package(OCE)
 find_package(Protobuf)
 
 include_directories(
+  ${CMAKE_SOURCE_DIR}
   ${OCE_INCLUDE_DIRS}
   ${PROTOBUF_INCLUDE_DIRS}
   ${LIBUV_INCLUDE_DIR}
