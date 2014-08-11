@@ -22,8 +22,9 @@ uint32_t packet_size = 0;
 void read_stdin(uv_stream_t *stream, ssize_t nread, uv_buf_t buffer) {
   // TODO: handle splits in buffer
   //       see: http://stackoverflow.com/questions/9496101/protocol-buffer-over-socket-in-c
-
   if (nread > -1) {
+    printf("read %u bytes\n", nread);
+
     if (buffer.base) {
 
       NetOCE_Request p;
@@ -33,9 +34,8 @@ void read_stdin(uv_stream_t *stream, ssize_t nread, uv_buf_t buffer) {
 
       p.ParseFromCodedStream(&input);
 
-      printf("result: \n%s", p.DebugString().c_str());
+      printf("result: \n%s \n argument length: %u\n", p.DebugString().c_str(), p.arguments_size());
 
-      // TODO: only free after expending the entire buffer
       free(buffer.base);
     }
   } else {

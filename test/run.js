@@ -15,4 +15,4 @@ var buf = req.encode({
   }]
 });
 
-process.stdout.write(buf.toString('binary'));
+process.stdout.write(buf);
