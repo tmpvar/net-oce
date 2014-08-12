@@ -1,5 +1,4 @@
 #include "handler.h"
-#include "editor.h"
 
 #include <StlAPI_Writer.hxx>
 

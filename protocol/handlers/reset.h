@@ -1,5 +1,4 @@
 #include "handler.h"
-#include "editor.h"
 
 HANDLER(reset) {
 
