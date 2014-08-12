@@ -23,7 +23,8 @@ bool NetOCE_Editor::handleRequest(NetOCE_Request *request, NetOCE_Response *resp
 
   bool r = net_oce_handlers[request->method()](this, request, response);
 
-  if (r) {
+  // only forward the sequence if the callee has not already done so
+  if (r && !response->has_seq()) {
     response->set_seq(request->seq());
   }
   return r;
