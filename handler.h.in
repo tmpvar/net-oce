@@ -11,9 +11,6 @@
 
   #define HANDLER_FROM_BASIC(name) net_oce_handler_##name
 
-  // SET_HANDLER_ARGS(name, ...) \
-  //   void net_oce_handler_inspect_##name(NetOCE_Operation *operation, ...) { \
-
   /* HEADERS */
 
   #define HANDLER_COUNT /* HANDLER_COUNT */

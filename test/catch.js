@@ -3,7 +3,6 @@ var path = require('path');
 var protobuf = require('protocol-buffers/require');
 
 var req = protobuf('../protocol/oce.proto').NetOCE_Response;
-
 var b = new Buffer([]);
 
 process.stdin.on('data', function(d) {
