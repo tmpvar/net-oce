@@ -1,5 +1,6 @@
 {
   "dependencies": {
-    "protocol-buffers": "^2.3.3"
+    "protocol-buffers": "^2.3.3",
+    "tape": "^2.14.0"
   }
 }
