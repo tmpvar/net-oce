@@ -28,6 +28,20 @@ var handlers = files.map(function(header) {
   return header.replace('.h', '');
 });
 
+var inspectResponse = handlers.map(function(handler, i) {
+  return [
+    'value = res->add_value();',
+    'value->set_type(NetOCE_Value::OPERATION);',
+
+    'operation = new NetOCE_Operation();',
+    'operation->set_id(' + (i+1) +');',
+    'operation->set_name("' + handler + '");',
+    'value->set_allocated_operation(operation);'
+  ].join('\n')
+});
+
+r('INSPECT_RESPONSE', inspectResponse.join('\n'));
+
 var handlerMap = files.map(function(header) {
   return 'HANDLER_FROM_BASIC(' + header.replace('.h', '') + ')'
 });

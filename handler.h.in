@@ -11,12 +11,18 @@
 
   #define HANDLER_FROM_BASIC(name) net_oce_handler_##name
 
+  // SET_HANDLER_ARGS(name, ...) \
+  //   void net_oce_handler_inspect_##name(NetOCE_Operation *operation, ...) { \
+
   /* HEADERS */
 
   #define HANDLER_COUNT /* HANDLER_COUNT */
 
   HANDLER(inspect) {
-    //NetOCE_Argument = res->add_argument();
+    NetOCE_Value *value;
+    NetOCE_Operation *operation;
+
+    /* INSPECT_RESPONSE */
 
     return true;
   }

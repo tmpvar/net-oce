@@ -1,28 +1,31 @@
-enum NetOCE_ValueType {
-  DOUBLE = 1;
-  FLOAT = 2;
-  INT32 = 3;
-  INT64 = 4;
-  UINT32 = 5;
-  UINT64 = 6;
-  SINT32 = 7;
-  SINT64 = 8;
-  FIXED32 = 9;
-  FIXED64 = 10;
-  SFIXED32 = 11;
-  SFIXED64 = 12;
-  BOOL = 13;
-  STRING = 14;
-  BYTES = 15;
-  OPERATION = 16;
-}
+
 
 message NetOCE_Operation {
-  optional uint32          id        = 33;
-  repeated NetOCE_Value    arguments = 34;
+  required uint32          id        = 33;
+  required string          name      = 34;
+  repeated NetOCE_Value    arguments = 35;
 }
 
 message NetOCE_Value {
+  enum NetOCE_ValueType {
+    DOUBLE = 1;
+    FLOAT = 2;
+    INT32 = 3;
+    INT64 = 4;
+    UINT32 = 5;
+    UINT64 = 6;
+    SINT32 = 7;
+    SINT64 = 8;
+    FIXED32 = 9;
+    FIXED64 = 10;
+    SFIXED32 = 11;
+    SFIXED64 = 12;
+    BOOL = 13;
+    STRING = 14;
+    BYTES = 15;
+    OPERATION = 16;
+  }
+
   required NetOCE_ValueType type = 23;
 
   optional double           double_value   = 24;
