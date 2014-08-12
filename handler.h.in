@@ -1,0 +1,30 @@
+#ifndef _NET_OCE_HANDLER
+#define _NET_OCE_HANDLER
+
+  #include "editor.h"
+
+  typedef bool (*handler_fn_t) (NetOCE_Editor *, NetOCE_Request *, NetOCE_Response *);
+
+
+  #define HANDLER(name) \
+    bool net_oce_handler_##name(NetOCE_Editor *editor, NetOCE_Request *req, NetOCE_Response *res)
+
+  #define HANDLER_FROM_BASIC(name) net_oce_handler_##name
+
+  /* HEADERS */
+
+  #define HANDLER_COUNT /* HANDLER_COUNT */
+
+  HANDLER(inspect) {
+    //NetOCE_Argument = res->add_argument();
+
+    return true;
+  }
+
+
+  handler_fn_t net_oce_handlers[HANDLER_COUNT] = {
+    HANDLER_FROM_BASIC(inspect),
+    /* HANDLER_LINES */
+  };
+
+#endif

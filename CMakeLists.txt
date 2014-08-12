@@ -11,6 +11,8 @@ find_path(LIBUV_INCLUDE_DIR uv.h)
 find_package(OCE)
 find_package(Protobuf)
 
+execute_process(COMMAND node ${CMAKE_SOURCE_DIR}/genhandlers.js ${CMAKE_BINARY_DIR}/handler.h)
+
 include_directories(
   ${CMAKE_SOURCE_DIR}
   ${OCE_INCLUDE_DIRS}

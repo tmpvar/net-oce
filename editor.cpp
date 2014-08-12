@@ -1,4 +1,5 @@
 #include "editor.h"
+#include "handler.h"
 
 NetOCE_Editor::NetOCE_Editor() {
   this->shapes = new vector<TopoDS_Shape>;
@@ -18,10 +19,12 @@ void NetOCE_Editor::reset() {
 }
 
 bool NetOCE_Editor::handleRequest(NetOCE_Request *request, NetOCE_Response *response) {
+  // TODO: typechecking on the request
 
-  // if ()
+  bool r = net_oce_handlers[request->method()](this, request, response);
 
-
-  // no reply required
-  return false;
+  if (r) {
+    response->set_seq(request->seq());
+  }
+  return r;
 }

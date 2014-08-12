@@ -1,4 +1,4 @@
-enum NetOCE_ArgumentType {
+enum NetOCE_ValueType {
   DOUBLE = 1;
   FLOAT = 2;
   INT32 = 3;
@@ -14,36 +14,44 @@ enum NetOCE_ArgumentType {
   BOOL = 13;
   STRING = 14;
   BYTES = 15;
+  OPERATION = 16;
 }
 
-message NetOCE_Argument {
-  required NetOCE_ArgumentType type = 23;
+message NetOCE_Operation {
+  optional uint32          id        = 33;
+  repeated NetOCE_Value    arguments = 34;
+}
 
-  optional double   double_value   = 24;
-  optional float    float_value    = 25;
-  optional int32    int32_value    = 26;
-  optional int64    int64_value    = 27;
-  optional uint32   uint32_value   = 28;
-  optional uint64   uint64_value   = 29;
-  optional sint32   sint32_value   = 30;
-  optional sint64   sint64_value   = 31;
-  optional fixed32  fixed32_value  = 32;
-  optional fixed64  fixed64_value  = 33;
-  optional sfixed32 sfixed32_value = 34;
-  optional sfixed64 sfixed64_value = 35;
-  optional bool     bool_value     = 36;
-  optional string   string_value   = 37;
-  optional bytes    bytes_value    = 38;
+message NetOCE_Value {
+  required NetOCE_ValueType type = 23;
+
+  optional double           double_value   = 24;
+  optional float            float_value    = 25;
+  optional int32            int32_value    = 26;
+  optional int64            int64_value    = 27;
+  optional uint32           uint32_value   = 28;
+  optional uint64           uint64_value   = 29;
+  optional sint32           sint32_value   = 30;
+  optional sint64           sint64_value   = 31;
+  optional fixed32          fixed32_value  = 32;
+  optional fixed64          fixed64_value  = 33;
+  optional sfixed32         sfixed32_value = 34;
+  optional sfixed64         sfixed64_value = 35;
+  optional bool             bool_value     = 36;
+  optional string           string_value   = 37;
+  optional bytes            bytes_value    = 38;
+  optional NetOCE_Operation operation      = 39;
 }
 
 message NetOCE_Request {
-  required string          method    = 1;
+  required uint32          method    = 1;
   required uint32          seq       = 2;
   optional uint32          id        = 3;
-  repeated NetOCE_Argument arguments = 4;
+  repeated NetOCE_Value    argument = 4;
 }
 
 message NetOCE_Response {
   required uint32          seq       = 12;
-  repeated NetOCE_Argument arguments = 14;
+  optional uint32          id        = 13;
+  repeated NetOCE_Value    value     = 14;
 }
