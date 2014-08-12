@@ -15,10 +15,7 @@ class NetOCE_Editor {
     void reset();
     bool handleRequest(NetOCE_Request *request, NetOCE_Response *response);
 
-
-  protected:
     vector<TopoDS_Shape> *shapes;
-
 };
 
 
