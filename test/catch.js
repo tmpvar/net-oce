@@ -11,6 +11,6 @@ process.stdin.on('data', function(d) {
 });
 
 process.stdin.on('end', function() {
-  console.log(req.decode(b));
+  console.log(JSON.stringify(req.decode(b), null, '  '));
 });
 
