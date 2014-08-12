@@ -1,12 +1,7 @@
-#ifndef _HANDLER_RESET
-#define _HANDLER_RESET
+#include "handler.h"
+#include "editor.h"
 
-  #include "handler.h"
-  #include "editor.h"
+HANDLER(reset) {
 
-  HANDLER(reset) {
-
-    return false;
-  }
-
-#endif
+  return false;
+}
