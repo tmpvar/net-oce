@@ -30,10 +30,11 @@ function setup(fn) {
     r.value.forEach(function(op) {
       var id = op.operation.id;
 
-      methods[op.operation.name] = function(fn) {
+      methods[op.operation.name] = function() {
 
         var args = [];
-        Array.prototype.push(args, arguments);
+        Array.prototype.push.apply(args, arguments);
+        var fn = args.pop();
 
         var obj = {
           method : id,
@@ -59,7 +60,6 @@ function setup(fn) {
   child.stdin.write(request.encode({ method: 0, seq: 0 }));
 }
 
-
 test('stl export - no shapes', function(t) {
   setup(function(e, child) {
     child.export_stl(function(e, result) {
@@ -71,3 +71,14 @@ test('stl export - no shapes', function(t) {
     });
   })
 });
+
+test('create cube', function(t) {
+  setup(function(e, child) {
+    child.cube(0, 0, 0, 10, 10, 10, function(e, result) {
+
+      console.log('here', result);
+      child._process.kill();
+      t.end();
+    });
+  })
+})
