@@ -18,9 +18,9 @@ HANDLER(export_stl) {
     // lower numbers cause more surface subdivision
     writer.SetCoefficient(0.01);
     writer.Write(editor->shapes->at(0), "out.stl", true);
-    value->set_bool(1);
+    value->set_bool_value(1);
   } else {
-    value->set_bool(1);
+    value->set_bool_value(0);
   }
 
   return true;
