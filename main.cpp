@@ -24,32 +24,9 @@ uv_buf_t alloc_buffer(uv_handle_t *handle, size_t size) {
   return uv_buf_init((char *) malloc(size), size);
 }
 
-void after_stdout_write(uv_write_t *req, int status) {
-  write_req_t *wreq = (write_req_t*) req;
-  // free(wreq->buf.base);
-  // free(wreq);
-}
-
 void write_cb(uv_fs_t *req) {
-  // printf("here\n");
   uv_fs_req_cleanup(req);
-
-
 }
-
-void write_data(size_t size, char * buf, uv_write_cb cb) {
-  // write_req_t *req = (write_req_t *)malloc(sizeof(write_req_t));
-  // req->buf = uv_buf_init(buf, size);
-  // pass copy of the buf thru to free_write_req because:
-  //  - buf->base is deallocated inside read_cb after write_data was called
-  //  - therefore we need to copy it's contents, but also need to free the copy later
-  // memcpy(req->buf.base, buf->base, size);
-  // int r = uv_write((uv_write_t*)req, (uv_stream_t*)&stdout_pipe, &req->buf, 1 /* n bufs */, cb);
-  //uv_fs_write(uv_default_loop(), &write_req, 1, buf, size, -1 /*offset*/, write_cb);
-
-  // assert(r == 0);
-}
-
 
 void read_stdin(uv_stream_t *stream, ssize_t nread, uv_buf_t buffer) {
   // TODO: handle splits in buffer
@@ -81,10 +58,6 @@ void read_stdin(uv_stream_t *stream, ssize_t nread, uv_buf_t buffer) {
           -1 /*offset*/,
           write_cb
         );
-
-
-
-
       }
 
       free(buffer.base);
