@@ -2,12 +2,24 @@
 
 #include <BRepPrimAPI_MakeBox.hxx>
 
-
-//TopoDS_Shell shp1_shell = BRepTools::OuterShell(solid1);
-
 HANDLER(cube) {
 
-  TopoDS_Solid cube = BRepPrimAPI_MakeBox(gp_Pnt(0, 0, 0), 3, 3, 3);
+  if (req->argument_size() != 6) {
+
+    // TODO: respond with error
+    assert(0);
+    return false;
+  }
+
+  double x = req->argument(0).double_value();
+  double y = req->argument(1).double_value();
+  double z = req->argument(2).double_value();
+  double w = req->argument(3).double_value();
+  double h = req->argument(4).double_value();
+  double d = req->argument(5).double_value();
+
+
+  TopoDS_Solid cube = BRepPrimAPI_MakeBox(gp_Pnt(x, y, z), w, h, d);
 
   editor->shapes->push_back(cube);
 
