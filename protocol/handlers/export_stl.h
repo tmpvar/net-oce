@@ -19,15 +19,15 @@ HANDLER(export_stl) {
 
     StlAPI_Writer writer;
 
-    unordered_map<uint32_t, TopoDS_Shape>::iterator it = editor->shapes->find(handle);
-    if (it == editor->shapes->end()) {
+    TopoDS_Shape shape = editor->getShape(handle);
+    if (shape.IsNull()) {
       HANDLER_ERROR("specified shape does not exist")
       return true;
     }
 
     // lower numbers cause more surface subdivision
     writer.SetCoefficient(0.01);
-    writer.Write(it->second, filename, true);
+    writer.Write(shape, filename, true);
 
     // return a boolean true
     NetOCE_Value *value = res->add_value();
