@@ -40,8 +40,6 @@ HANDLER(op_union) {
     result = BRepAlgoAPI_Fuse(result, c);
   }
 
-
-  // BRepAlgoAPI_Fuse
   NetOCE_Value *val = res->add_value();
   val->set_type(NetOCE_Value::SHAPE_HANDLE);
   val->set_uint32_value(editor->addShape(result));
