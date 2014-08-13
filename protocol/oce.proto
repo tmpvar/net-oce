@@ -7,7 +7,7 @@ message NetOCE_Operation {
 }
 
 message NetOCE_Value {
-  enum NetOCE_ValueType {
+  enum Type {
     DOUBLE = 1;
     FLOAT = 2;
     INT32 = 3;
@@ -25,9 +25,10 @@ message NetOCE_Value {
     BYTES = 15;
     OPERATION = 16;
     ERROR = 17;
+    SHAPE_HANDLE = 18;
   }
 
-  required NetOCE_ValueType type = 23;
+  required Type type = 23;
 
   optional double           double_value   = 24;
   optional float            float_value    = 25;
