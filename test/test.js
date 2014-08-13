@@ -72,13 +72,16 @@ test('stl export - no shapes', function(t) {
   })
 });
 
-test('create cube', function(t) {
+test('stl export - cube', function(t) {
   setup(function(e, child) {
     child.cube(0, 0, 0, 10, 10, 10, function(e, result) {
+      child.export_stl(function(e, result) {
+        t.equal(result.value[0].type, 13);
+        t.equal(result.value[0].bool_value, true);
 
-      console.log('here', result);
-      child._process.kill();
-      t.end();
+        child._process.kill();
+        t.end();
+      });
     });
   })
 })
