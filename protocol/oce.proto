@@ -3,7 +3,7 @@
 message NetOCE_Operation {
   required uint32          id        = 33;
   required string          name      = 34;
-  repeated NetOCE_Value    arguments = 35;
+  repeated NetOCE_Value    argument = 35;
 }
 
 message NetOCE_Value {
