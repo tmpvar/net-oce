@@ -21,6 +21,9 @@ HANDLER(cube) {
 
   editor->shapes->push_back(cube);
 
-  // TODO: return a handle
+  NetOCE_Value *val = res->add_value();
+  val->set_type(NetOCE_Value::SHAPE_HANDLE);
+  val->set_uint32_value(editor->shapes->size()-1);
+
   return true;
 }
