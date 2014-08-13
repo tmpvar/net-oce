@@ -13,6 +13,12 @@
 
   #define HANDLER_LOG(str, args...) fprintf(stderr, str, args);
 
+  #define HANDLER_ERROR(message) \
+    NetOCE_Value *val = res->add_value(); \
+    val->set_type(NetOCE_Value::ERROR); \
+    val->set_string_value(message);
+
+
 
 /* HEADERS */
 

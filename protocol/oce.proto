@@ -24,6 +24,7 @@ message NetOCE_Value {
     STRING = 14;
     BYTES = 15;
     OPERATION = 16;
+    ERROR = 17;
   }
 
   required NetOCE_ValueType type = 23;

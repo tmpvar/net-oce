@@ -5,10 +5,8 @@
 HANDLER(cube) {
 
   if (req->argument_size() != 6) {
-
-    // TODO: respond with error
-    assert(0);
-    return false;
+    HANDLER_ERROR("6 arguments required: x y z w d h")
+    return true;
   }
 
   double x = req->argument(0).double_value();

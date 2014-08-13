@@ -1,4 +1,4 @@
-var test = require('tape');
+var _test = require('tape');
 var fs = require('fs');
 var path = require('path');
 var protobuf = require('protocol-buffers/require');
@@ -65,28 +65,43 @@ function setup(fn) {
   child.stdin.write(request.encode({ method: 0, seq: 0 }));
 }
 
-test('stl export - no shapes', function(t) {
+function test(name, fn) {
   setup(function(e, child) {
-    child.export_stl(function(e, result) {
-      t.equal(result.value[0].type, 13);
-      t.equal(result.value[0].bool_value, false);
+    _test(function(t) {
+      var end = t.end.bind(t);
+      t.end = function() {
+        child._process.kill();
+        end();
+      };
 
-      child._process.kill();
-      t.end();
+      fn(child, t);
     });
-  })
+  });
+}
+
+test('stl export - no shapes', function(child, t) {
+  child.export_stl(function(e, result) {
+    t.equal(result.value[0].type, 13);
+    t.equal(result.value[0].bool_value, false);
+
+    t.end();
+  });
 });
 
-test('stl export - cube', function(t) {
-  setup(function(e, child) {
-    child.cube(0, 0, 0, 10, 10, 10, function(e, result) {
-      child.export_stl(function(e, result) {
-        t.equal(result.value[0].type, 13);
-        t.equal(result.value[0].bool_value, true);
+test('stl export - cube', function(child, t) {
+  child.cube(0, 0, 0, 10, 10, 10, function(e, result) {
+    child.export_stl(function(e, result) {
+      t.equal(result.value[0].type, 13);
+      t.equal(result.value[0].bool_value, true);
 
-        child._process.kill();
-        t.end();
-      });
+      t.end();
     });
-  })
-})
+  });
+});
+
+test('cube - no args', function(child, t) {
+  child.cube(function(e, result) {
+    t.equal(result.value[0].type, 17);
+    t.end();
+  });
+});
