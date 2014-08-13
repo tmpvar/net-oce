@@ -1,7 +1,8 @@
 #ifndef _NET_OCE_EDITOR_
 #define _NET_OCE_EDITOR_
 
-#include <vector>
+#include <unordered_map>
+
 #include <TopoDS_Shape.hxx>
 #include "oce.pb.h"
 
@@ -15,7 +16,11 @@ class NetOCE_Editor {
     void reset();
     bool handleRequest(NetOCE_Request *request, NetOCE_Response *response);
 
-    vector<TopoDS_Shape> *shapes;
+    void addShape(uint32_t id, TopoDS_Shape shape) {
+      this->shapes->insert(make_pair<uint32_t, TopoDS_Shape>(id, shape));
+    }
+
+    unordered_map<uint32_t, TopoDS_Shape> *shapes;
 };
 
 

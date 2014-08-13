@@ -8,3 +8,4 @@ Makefile
 test/node_modules
 oce
 out.stl
+node_modules

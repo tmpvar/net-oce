@@ -1,5 +1,12 @@
 {
-  "name" : "net-oce",
-  "version" : "0.0.0",
-  "description" : "libuv / protobuf wrapper around oce"
+  "name": "net-oce",
+  "version": "0.0.0",
+  "description": "libuv / protobuf wrapper around oce",
+  "dependencies": {
+    "protobuf-schema": "^1.0.1",
+    "protocol-buffers": "^2.3.3"
+  },
+  "devDependencies" : {
+    "tape": "^2.14.0"
+  }
 }

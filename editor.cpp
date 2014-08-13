@@ -2,15 +2,16 @@
 #include "handler.h"
 
 NetOCE_Editor::NetOCE_Editor() {
-  this->shapes = new vector<TopoDS_Shape>;
+  this->shapes = new unordered_map<uint32_t, TopoDS_Shape>();
 }
 
 NetOCE_Editor::~NetOCE_Editor() {
+  // TODO: cleanup shapes
   delete this->shapes;
 }
 
 void NetOCE_Editor::reset() {
-  vector<TopoDS_Shape>::iterator it = this->shapes->begin();
+  unordered_map<uint32_t, TopoDS_Shape>::iterator it = this->shapes->begin();
   for (; it != this->shapes->end(); ++it) {
     printf("clean\n");
   }
