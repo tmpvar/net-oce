@@ -18,17 +18,27 @@ HANDLER(op_union) {
   // dsFill.SetArguments(aLS);
   // dsFill.Perform();
 
-  TopoDS_Shape result;
+  TopoDS_Shape result, a, b;
 
+  a = editor->getShape(req->argument(0).uint32_value());
+  b = editor->getShape(req->argument(1).uint32_value());
+  if (a.IsNull() || b.IsNull()) {
+    HANDLER_ERROR("invalid shape specified")
+    return true;
+  }
 
-  result = BRepAlgoAPI_Fuse(
-    editor->getShape(req->argument(0).uint32_value()),
-    editor->getShape(req->argument(1).uint32_value())
-  );
+  result = BRepAlgoAPI_Fuse(a, b);
 
-  // for (int i=1; i<argc; i++) {
+  for (int i=2; i<argc; i++) {
+    TopoDS_Shape c = editor->getShape(req->argument(i).uint32_value());
 
-  // }
+    if (c.IsNull()) {
+      HANDLER_ERROR("invalid shape specified")
+      return true;
+    }
+
+    result = BRepAlgoAPI_Fuse(result, c);
+  }
 
 
   // BRepAlgoAPI_Fuse

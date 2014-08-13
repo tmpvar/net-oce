@@ -11,6 +11,9 @@ var tdir = __dirname;
 var tmpdir = pjoin(tdir, 'tmp') + '/';
 var exe = pjoin(tdir, '..', 'out/bin/net-oce');
 
+var stl = require('stl');
+
+
 var schema = require('../schema');
 var ENUM = schema.NetOCE_Value.type;
 
@@ -163,7 +166,7 @@ test('cube', function(child, t) {
   });
 });
 
-test('op_union', function(child, t) {
+test('op_union - 2 cubes', function(child, t) {
   child.cube(0, 0, 0, 10, 10, 10, function(e, cube1) {
     child.cube(5, 5, 5, 10, 10, 10, function(e, cube2) {
       child.op_union([
@@ -173,17 +176,51 @@ test('op_union', function(child, t) {
         t.equal(unioned.value[0].type, ENUM('SHAPE_HANDLE'));
         t.ok(unioned.value[0].uint32_value !== 0);
 
+        var out = tmpdir + 'op_union.stl'
+
         child.export_stl([
           { type : ENUM('SHAPE_HANDLE'), uint32_value: unioned.value[0].uint32_value },
-          { type : ENUM('STRING'), string_value: tmpdir + 'op_union.stl' }
+          { type : ENUM('STRING'), string_value: out }
         ], function(e, result) {
           t.equal(result.value[0].type, ENUM('BOOL'));
           t.equal(result.value[0].bool_value, true);
 
+          var obj = stl.toObject(fs.readFileSync(out).toString());
+          t.equal(obj.facets.length, 36);
           t.end();
         });
       });
     });
   });
+});
 
+test('op_union - 3 cubes', function(child, t) {
+  child.cube(0, 0, 0, 10, 10, 10, function(e, cube1) {
+    child.cube(5, 5, 5, 10, 10, 10, function(e, cube2) {
+      child.cube(-5, -5, -5, 10, 10, 5, function(e, cube3) {
+        child.op_union([
+          { type : ENUM('SHAPE_HANDLE'), uint32_value: cube1.value[0].uint32_value },
+          { type : ENUM('SHAPE_HANDLE'), uint32_value: cube2.value[0].uint32_value },
+          { type : ENUM('SHAPE_HANDLE'), uint32_value: cube3.value[0].uint32_value },
+        ], function(e, unioned) {
+          t.equal(unioned.value[0].type, ENUM('SHAPE_HANDLE'));
+          t.ok(unioned.value[0].uint32_value !== 0);
+
+          var out = tmpdir + 'op_union.3cubes.stl';
+
+          child.export_stl([
+            { type : ENUM('SHAPE_HANDLE'), uint32_value: unioned.value[0].uint32_value },
+            { type : ENUM('STRING'), string_value: out }
+          ], function(e, result) {
+            t.equal(result.value[0].type, ENUM('BOOL'));
+            t.equal(result.value[0].bool_value, true);
+
+            var obj = stl.toObject(fs.readFileSync(out).toString());
+            t.equal(obj.facets.length, 56);
+            t.end();
+          });
+        });
+      });
+    });
+  });
 });
