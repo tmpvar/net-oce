@@ -3,38 +3,53 @@
 #include <StlAPI_Writer.hxx>
 
 HANDLER(export_stl) {
+  int argc = req->argument_size();
 
-  if (req->argument_size() < 2) {
-    HANDLER_ERROR("2 arguments required: <shape> 'filename.stl'")
+  if (argc < 2) {
+    HANDLER_ERROR("2 arguments required: 'filename.stl' object ...")
     return true;
   }
 
-  uint32_t handle = req->argument(0).uint32_value();
-  const char *filename = req->argument(1).string_value().c_str();
+  const char *filename = req->argument(0).string_value().c_str();
+
 
   // TODO: coefficient argument
-  // TODO: stl filename argument
+
+
+
+
 
   if (editor->shapes->size()) {
 
     StlAPI_Writer writer;
 
-    TopoDS_Shape shape = editor->getShape(handle);
-    if (shape.IsNull()) {
-      HANDLER_ERROR("specified shape does not exist")
-      return true;
+    TopoDS_Compound compoundShape;
+    BRep_Builder builder;
+    builder.MakeCompound(compoundShape);
+
+    uint32_t handle;
+    for (int i=1; i<argc; i++) {
+      handle = req->argument(i).uint32_value();
+
+      TopoDS_Shape shape = editor->getShape(handle);
+      if (shape.IsNull()) {
+        HANDLER_ERROR("specified shape does not exist")
+        return true;
+      }
+
+      builder.Add(compoundShape, shape);
     }
 
     // lower numbers cause more surface subdivision
     writer.SetCoefficient(0.01);
-    writer.Write(shape, filename, true);
+    writer.Write(compoundShape, filename, true);
 
     // return a boolean true
     NetOCE_Value *value = res->add_value();
     value->set_type(NetOCE_Value::BOOL);
     value->set_bool_value(1);
   } else {
-    // return a boolean true
+    // return a boolean false
     NetOCE_Value *value = res->add_value();
     value->set_type(NetOCE_Value::BOOL);
     value->set_bool_value(0);

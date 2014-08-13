@@ -124,8 +124,8 @@ test('stl export - invalid SHAPE_HANDLE', function(child, t) {
 
 test('stl export - no shapes', function(child, t) {
   child.export_stl([
-    { type : ENUM('SHAPE_HANDLE'), uint32_value: 123 },
-    { type : ENUM('STRING'), string_value: 'blah.stl' }
+    { type : ENUM('STRING'), string_value: 'no shapes' },
+    { type : ENUM('SHAPE_HANDLE'), uint32_value: 123 }
   ], function(e, result) {
     t.equal(result.value[0].type, ENUM('BOOL'));
     t.equal(result.value[0].bool_value, false);
@@ -139,14 +139,45 @@ test('stl export - cube', function(child, t) {
 
     t.equal(cube.value[0].type, ENUM('SHAPE_HANDLE'));
 
+    var out = tmpdir + 'cube.stl';
+
     child.export_stl([
-      { type : ENUM('SHAPE_HANDLE'), uint32_value: cube.value[0].uint32_value },
-      { type : ENUM('STRING'), string_value: tmpdir + 'blah.stl' }
+      { type : ENUM('STRING'), string_value: out },
+      { type : ENUM('SHAPE_HANDLE'), uint32_value: cube.value[0].uint32_value }
     ], function(e, result) {
       t.equal(result.value[0].type, ENUM('BOOL'));
       t.equal(result.value[0].bool_value, true);
 
+      var obj = stl.toObject(fs.readFileSync(out).toString());
+      t.equal(obj.facets.length, 12);
+
       t.end();
+    });
+  });
+});
+
+test('stl export - 2 cubes', function(child, t) {
+  child.cube(0, 0, 0, 10, 10, 10, function(e, cube1) {
+    t.equal(cube1.value[0].type, ENUM('SHAPE_HANDLE'));
+
+    child.cube(20, 0, 0, 10, 10, 10, function(e, cube2) {
+      t.equal(cube2.value[0].type, ENUM('SHAPE_HANDLE'));
+
+      var out = tmpdir + 'two-cubes.stl';
+
+      child.export_stl([
+        { type : ENUM('STRING'), string_value: out },
+        { type : ENUM('SHAPE_HANDLE'), uint32_value: cube1.value[0].uint32_value },
+        { type : ENUM('SHAPE_HANDLE'), uint32_value: cube2.value[0].uint32_value }
+      ], function(e, result) {
+        t.equal(result.value[0].type, ENUM('BOOL'));
+        t.equal(result.value[0].bool_value, true);
+
+        var obj = stl.toObject(fs.readFileSync(out).toString());
+        t.equal(obj.facets.length, 24);
+
+        t.end();
+      });
     });
   });
 });
@@ -171,7 +202,7 @@ test('op_union - 2 cubes', function(child, t) {
     child.cube(5, 5, 5, 10, 10, 10, function(e, cube2) {
       child.op_union([
         { type : ENUM('SHAPE_HANDLE'), uint32_value: cube1.value[0].uint32_value },
-        { type : ENUM('SHAPE_HANDLE'), uint32_value: cube2.value[0].uint32_value },
+        { type : ENUM('SHAPE_HANDLE'), uint32_value: cube2.value[0].uint32_value }
       ], function(e, unioned) {
         t.equal(unioned.value[0].type, ENUM('SHAPE_HANDLE'));
         t.ok(unioned.value[0].uint32_value !== 0);
@@ -179,8 +210,8 @@ test('op_union - 2 cubes', function(child, t) {
         var out = tmpdir + 'op_union.stl'
 
         child.export_stl([
+          { type : ENUM('STRING'), string_value: out },
           { type : ENUM('SHAPE_HANDLE'), uint32_value: unioned.value[0].uint32_value },
-          { type : ENUM('STRING'), string_value: out }
         ], function(e, result) {
           t.equal(result.value[0].type, ENUM('BOOL'));
           t.equal(result.value[0].bool_value, true);
@@ -209,8 +240,8 @@ test('op_union - 3 cubes', function(child, t) {
           var out = tmpdir + 'op_union.3cubes.stl';
 
           child.export_stl([
+            { type : ENUM('STRING'), string_value: out },
             { type : ENUM('SHAPE_HANDLE'), uint32_value: unioned.value[0].uint32_value },
-            { type : ENUM('STRING'), string_value: out }
           ], function(e, result) {
             t.equal(result.value[0].type, ENUM('BOOL'));
             t.equal(result.value[0].bool_value, true);
@@ -220,6 +251,36 @@ test('op_union - 3 cubes', function(child, t) {
             t.end();
           });
         });
+      });
+    });
+  });
+});
+
+test('op_union - invalid handle in loop', function(child, t) {
+  child.cube(0, 0, 0, 10, 10, 10, function(e, cube1) {
+    child.cube(5, 5, 5, 10, 10, 10, function(e, cube2) {
+      child.op_union([
+        { type : ENUM('SHAPE_HANDLE'), uint32_value: cube1.value[0].uint32_value },
+        { type : ENUM('SHAPE_HANDLE'), uint32_value: cube2.value[0].uint32_value },
+        { type : ENUM('SHAPE_HANDLE'), uint32_value: 0 },
+      ], function(e, r) {
+        t.equal(r.value[0].type, ENUM('ERROR'));
+        t.end();
+      });
+    });
+  });
+});
+
+test('op_union - invalid handle in loop', function(child, t) {
+  child.cube(0, 0, 0, 10, 10, 10, function(e, cube1) {
+    child.cube(5, 5, 5, 10, 10, 10, function(e, cube2) {
+      child.op_union([
+        { type : ENUM('SHAPE_HANDLE'), uint32_value: cube1.value[0].uint32_value },
+        { type : ENUM('SHAPE_HANDLE'), uint32_value: cube2.value[0].uint32_value },
+        { type : ENUM('SHAPE_HANDLE'), uint32_value: 0 },
+      ], function(e, r) {
+        t.equal(r.value[0].type, ENUM('ERROR'));
+        t.end();
       });
     });
   });
