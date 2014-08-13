@@ -19,11 +19,9 @@ HANDLER(cube) {
 
   TopoDS_Solid cube = BRepPrimAPI_MakeBox(gp_Pnt(x, y, z), w, h, d);
 
-  editor->addShape(123, cube);
-
   NetOCE_Value *val = res->add_value();
   val->set_type(NetOCE_Value::SHAPE_HANDLE);
-  val->set_uint32_value(123);
+  val->set_uint32_value(editor->addShape(cube));
 
   return true;
 }

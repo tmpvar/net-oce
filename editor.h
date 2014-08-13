@@ -16,11 +16,18 @@ class NetOCE_Editor {
     void reset();
     bool handleRequest(NetOCE_Request *request, NetOCE_Response *response);
 
-    void addShape(uint32_t id, TopoDS_Shape shape) {
-      this->shapes->insert(make_pair<uint32_t, TopoDS_Shape>(id, shape));
+    uint32_t addShape(TopoDS_Shape shape) {
+      this->shape_index++;
+
+      this->shapes->insert(
+        make_pair<uint32_t, TopoDS_Shape>(this->shape_index, shape)
+      );
+      return this->shape_index;
     }
 
     unordered_map<uint32_t, TopoDS_Shape> *shapes;
+  protected:
+    uint32_t shape_index;
 };
 
 

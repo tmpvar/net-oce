@@ -36,6 +36,7 @@ function setup(fn) {
       _process : child
     };
 
+    var seq = 1;
     r.value.forEach(function(op) {
       var id = op.operation.id;
 
@@ -60,7 +61,7 @@ function setup(fn) {
 
         var obj = {
           method : id,
-          seq: 123123,
+          seq: seq++,
           argument: args
         };
         queue.push(fn);

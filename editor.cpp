@@ -3,6 +3,7 @@
 
 NetOCE_Editor::NetOCE_Editor() {
   this->shapes = new unordered_map<uint32_t, TopoDS_Shape>();
+  this->shape_index = 0;
 }
 
 NetOCE_Editor::~NetOCE_Editor() {
