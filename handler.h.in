@@ -11,6 +11,9 @@
 
   #define HANDLER_FROM_BASIC(name) net_oce_handler_##name
 
+  #define HANDLER_LOG(str, args...) fprintf(stderr, str, args);
+
+
 /* HEADERS */
 
   #define HANDLER_COUNT /* HANDLER_COUNT */
