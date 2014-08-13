@@ -25,6 +25,17 @@ class NetOCE_Editor {
       return this->shape_index;
     }
 
+    TopoDS_Shape getShape(uint32_t handle) {
+      unordered_map<uint32_t, TopoDS_Shape>::iterator it = this->shapes->find(handle);
+      if (it == this->shapes->end()) {
+        TopoDS_Shape ret;
+        ret.Nullify();
+        return ret;
+      } else {
+        return it->second;
+      }
+    }
+
     unordered_map<uint32_t, TopoDS_Shape> *shapes;
   protected:
     uint32_t shape_index;
