@@ -44,8 +44,8 @@ function setup(fn) {
           method : id,
           seq: 123123,
           argument: args.map(function(arg) {
-
             // TODO: do proper typing
+            // TODO: Handle wrapper
             return {
               type: 1,
               double_value: arg
@@ -89,7 +89,11 @@ test('stl export - no shapes', function(child, t) {
 });
 
 test('stl export - cube', function(child, t) {
-  child.cube(0, 0, 0, 10, 10, 10, function(e, result) {
+  child.cube(0, 0, 0, 10, 10, 10, function(e, cube) {
+
+    t.equal(cube.value[0].type, 18);
+    t.equal()
+
     child.export_stl(function(e, result) {
       t.equal(result.value[0].type, 13);
       t.equal(result.value[0].bool_value, true);
@@ -102,6 +106,14 @@ test('stl export - cube', function(child, t) {
 test('cube - no args', function(child, t) {
   child.cube(function(e, result) {
     t.equal(result.value[0].type, 17);
+    t.end();
+  });
+});
+
+test('cube', function(child, t) {
+  child.cube(0, 0, 0, 10, 10, 10, function(e, cube) {
+    t.equal(cube.value[0].type, 18);
+    t.ok(cube.value[0].uint32_value !== 0);
     t.end();
   });
 });
