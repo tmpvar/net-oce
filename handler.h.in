@@ -11,15 +11,14 @@
 
   #define HANDLER_FROM_BASIC(name) net_oce_handler_##name
 
-  /* HEADERS */
+/* HEADERS */
 
   #define HANDLER_COUNT /* HANDLER_COUNT */
 
   HANDLER(inspect) {
     NetOCE_Value *value;
     NetOCE_Operation *operation;
-
-    /* INSPECT_RESPONSE */
+/* INSPECT_RESPONSE */
 
     return true;
   }
@@ -27,7 +26,7 @@
 
   handler_fn_t net_oce_handlers[HANDLER_COUNT] = {
     HANDLER_FROM_BASIC(inspect),
-    /* HANDLER_LINES */
+/* HANDLER_LINES */
   };
 
 #endif

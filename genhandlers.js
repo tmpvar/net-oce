@@ -18,7 +18,7 @@ function r(name, value) {
 }
 
 var headers = files.map(function(header) {
-  return '#include "protocol/handlers/' + header + '"';
+  return '  #include "protocol/handlers/' + header + '"';
 });
 
 r('HEADERS', headers.join('\n'));
@@ -30,20 +30,21 @@ var handlers = files.map(function(header) {
 
 var inspectResponse = handlers.map(function(handler, i) {
   return [
-    'value = res->add_value();',
-    'value->set_type(NetOCE_Value::OPERATION);',
-
-    'operation = new NetOCE_Operation();',
-    'operation->set_id(' + (i+1) +');',
-    'operation->set_name("' + handler + '");',
-    'value->set_allocated_operation(operation);'
+    '',
+    '    // ' + handler,
+    '    value = res->add_value();',
+    '    value->set_type(NetOCE_Value::OPERATION);',
+    '    operation = new NetOCE_Operation();',
+    '    operation->set_id(' + (i+1) +');',
+    '    operation->set_name("' + handler + '");',
+    '    value->set_allocated_operation(operation);'
   ].join('\n')
 });
 
 r('INSPECT_RESPONSE', inspectResponse.join('\n'));
 
 var handlerMap = files.map(function(header) {
-  return 'HANDLER_FROM_BASIC(' + header.replace('.h', '') + ')'
+  return '    HANDLER_FROM_BASIC(' + header.replace('.h', '') + ')'
 });
 
 r('HANDLER_LINES', handlerMap.join(',\n'));
