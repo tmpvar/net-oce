@@ -23,6 +23,10 @@ function setup(fn) {
       fn(null, response.decode(data));
     });
 
+    child.stderr.on('data', function(d) {
+      console.log('ERROR', d.toString());
+    });
+
     var methods = {
       _process : child
     };
@@ -39,7 +43,7 @@ function setup(fn) {
         var obj = {
           method : id,
           seq: 123123,
-          arguments: args.map(function(arg) {
+          argument: args.map(function(arg) {
 
             // TODO: do proper typing
             return {
@@ -50,7 +54,8 @@ function setup(fn) {
         };
         queue.push(fn);
 
-        child.stdin.write(request.encode(obj));
+        var req = request.encode(obj);
+        child.stdin.write(req);
       };
     });
 
