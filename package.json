@@ -4,7 +4,8 @@
   "description": "libuv / protobuf wrapper around oce",
   "dependencies": {
     "protobuf-schema": "^1.0.1",
-    "protocol-buffers": "^2.3.3"
+    "protocol-buffers": "^2.3.3",
+    "net-oce-protocol": "solids/net-oce-protocol"
   },
   "devDependencies": {
     "stl": "^1.1.0",
