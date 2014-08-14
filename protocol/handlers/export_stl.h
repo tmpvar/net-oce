@@ -12,12 +12,7 @@ HANDLER(export_stl) {
 
   const char *filename = req->argument(0).string_value().c_str();
 
-
   // TODO: coefficient argument
-
-
-
-
 
   if (editor->shapes->size()) {
 
