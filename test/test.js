@@ -4,18 +4,19 @@ var path = require('path');
 var pjoin = path.join;
 var protobuf = require('protocol-buffers/require');
 var spawn = require('child_process').spawn;
-var oce = protobuf('../protocol/oce.proto');
-var request = oce.NetOCE_Request;
-var response = oce.NetOCE_Response;
+var oce = require('net-oce-protocol');
+
+var request = oce.objects.NetOCE_Request;
+var response = oce.objects.NetOCE_Response;
+
 var tdir = __dirname;
 var tmpdir = pjoin(tdir, 'tmp') + '/';
 var exe = pjoin(tdir, '..', 'out/bin/net-oce');
 
 var stl = require('stl');
 
-
-var schema = require('../schema');
-var ENUM = schema.NetOCE_Value.type;
+// var schema = require('../schema');
+var ENUM = oce.NetOCE_Value.type;
 
 function setup(fn) {
   var child = spawn(exe, [], {
@@ -281,6 +282,34 @@ test('op_union - invalid handle in loop', function(child, t) {
       ], function(e, r) {
         t.equal(r.value[0].type, ENUM('ERROR'));
         t.end();
+      });
+    });
+  });
+});
+
+test('op_cut - two cubes', function(child, t) {
+  child.cube(0, 0, 0, 20, 20, 10, function(e, cube1) {
+    child.cube(10, 10, 0, 5, 5, 20, function(e, cube2) {
+      child.op_cut([
+        { type : ENUM('SHAPE_HANDLE'), uint32_value: cube1.value[0].uint32_value },
+        { type : ENUM('SHAPE_HANDLE'), uint32_value: cube2.value[0].uint32_value }
+      ], function(e, cut) {
+        t.equal(cut.value[0].type, ENUM('SHAPE_HANDLE'));
+        t.ok(cut.value[0].uint32_value !== 0);
+
+        var out = tmpdir + 'op_cut.2cubes.stl';
+
+        child.export_stl([
+          { type : ENUM('STRING'), string_value: out },
+          { type : ENUM('SHAPE_HANDLE'), uint32_value: cut.value[0].uint32_value },
+        ], function(e, result) {
+          t.equal(result.value[0].type, ENUM('BOOL'));
+          t.equal(result.value[0].bool_value, true);
+
+          var obj = stl.toObject(fs.readFileSync(out).toString());
+          t.equal(obj.facets.length, 32);
+          t.end();
+        });
       });
     });
   });
