@@ -22,7 +22,7 @@ function argumentHintParser(hint, args) {
       return { type : ENUM('DOUBLE'), double_value: val };
     },
     handle: function (val) {
-      return { type : ENUM('SHAPE_HANDLE'), uint32_value: val };
+      return { type : ENUM('SHAPE_HANDLE'), uint32_value: val.id };
     },
     string: function(val) {
       return { type : ENUM('STRING'), string_value: val }
@@ -56,6 +56,55 @@ function argumentHintParser(hint, args) {
   });
 }
 
+var Response = oce.NetOCE_Response;
+var type_mapping = [
+  '',
+  'double_value',
+  'float_value',
+  'int32_value',
+  'int64_value',
+  'uint32_value',
+  'uint64_value',
+  'sint32_value',
+  'sint64_value',
+  'fixed32_value',
+  'fixed64_value',
+  'sfixed32_value',
+  'sfixed64_value',
+  'bool_value',
+  'string_value',
+  'bytes_value'
+];
+
+function getResponseArray(obj, fn) {
+  var ret = [];
+
+  var l = obj.value.length;
+  for (var i=0; i<l; i++) {
+    var value = obj.value[i];
+
+    if (value.type < 16) {
+      ret.push(value[type_mapping[value.type]]);
+    } else {
+      switch (value.type) {
+        case 16: // OPERATION
+        break;
+
+        case 17: // ERROR
+          return fn(new Error(value.string_value));
+        break;
+
+        case 18: // SHAPE_HANDLE
+          ret.push({ id: value.uint32_value });
+        break;
+      }
+    }
+  }
+
+  fn(null, (ret.length > 1) ? ret : ret[0]);
+}
+
+
 function setup(fn) {
   var child = spawn(exe, [], {
     stdio : 'pipe'
@@ -67,7 +116,7 @@ function setup(fn) {
     var queue = [];
     child.stdout.on('data', function(data) {
       var fn = queue.shift();
-      fn(null, response.decode(data));
+      getResponseArray(response.decode(data), fn);
     });
 
     child.stderr.on('data', function(d) {
@@ -136,7 +185,8 @@ function test(name, fn) {
 
 test('stl export - no args', function(child, t) {
   child.export_stl(function(e, r) {
-    t.equal(r.value[0].type, ENUM('ERROR'));
+    t.ok(e);
+    t.notOk(r);
     t.end();
   });
 });
@@ -144,17 +194,15 @@ test('stl export - no args', function(child, t) {
 test('stl export - invalid SHAPE_HANDLE', function(child, t) {
   child.cube(0, 0, 0, 10, 10, 10, function(e, cube) {
     child.export_stl('blah.stl', 0, function(e, r) {
-      t.equal(r.value[0].type, ENUM('ERROR'));
+      t.ok(e)
       t.end();
     });
   });
 });
 
 test('stl export - no shapes', function(child, t) {
-  child.export_stl('no shapes', 123, function(e, result) {
-    t.equal(result.value[0].type, ENUM('BOOL'));
-    t.equal(result.value[0].bool_value, false);
-
+  child.export_stl('no shapes', 123, function(e) {
+    t.ok(e);
     t.end();
   });
 });
@@ -162,13 +210,12 @@ test('stl export - no shapes', function(child, t) {
 test('stl export - cube', function(child, t) {
   child.cube(0, 0, 0, 10, 10, 10, function(e, cube) {
 
-    t.equal(cube.value[0].type, ENUM('SHAPE_HANDLE'));
+    t.equal(cube.id, 1);
 
     var out = tmpdir + 'cube.stl';
 
-    child.export_stl(out, cube.value[0].uint32_value, function(e, result) {
-      t.equal(result.value[0].type, ENUM('BOOL'));
-      t.equal(result.value[0].bool_value, true);
+    child.export_stl(out, cube, function(e, result) {
+      t.equal(result, true);
 
       var obj = stl.toObject(fs.readFileSync(out).toString());
       t.equal(obj.facets.length, 12);
@@ -180,16 +227,15 @@ test('stl export - cube', function(child, t) {
 
 test('stl export - 2 cubes', function(child, t) {
   child.cube(0, 0, 0, 10, 10, 10, function(e, cube1) {
-    t.equal(cube1.value[0].type, ENUM('SHAPE_HANDLE'));
+    t.equal(cube1.id, 1);
 
     child.cube(20, 0, 0, 10, 10, 10, function(e, cube2) {
-      t.equal(cube2.value[0].type, ENUM('SHAPE_HANDLE'));
+      t.equal(cube2.id, 2);
 
       var out = tmpdir + 'two-cubes.stl';
 
-      child.export_stl(out, cube1.value[0].uint32_value, cube2.value[0].uint32_value, function(e, result) {
-        t.equal(result.value[0].type, ENUM('BOOL'));
-        t.equal(result.value[0].bool_value, true);
+      child.export_stl(out, cube1, cube2, function(e, result) {
+        t.equal(result, true);
 
         var obj = stl.toObject(fs.readFileSync(out).toString());
         t.equal(obj.facets.length, 24);
@@ -201,16 +247,15 @@ test('stl export - 2 cubes', function(child, t) {
 });
 
 test('cube - no args', function(child, t) {
-  child.cube(function(e, result) {
-    t.equal(result.value[0].type, ENUM('ERROR'));
+  child.cube(function(e) {
+    t.ok(e)
     t.end();
   });
 });
 
 test('cube', function(child, t) {
   child.cube(0, 0, 0, 10, 10, 10, function(e, cube) {
-    t.equal(cube.value[0].type, ENUM('SHAPE_HANDLE'));
-    t.ok(cube.value[0].uint32_value !== 0);
+    t.equal(cube.id, 1);
     t.end();
   });
 });
@@ -218,15 +263,13 @@ test('cube', function(child, t) {
 test('op_union - 2 cubes', function(child, t) {
   child.cube(0, 0, 0, 10, 10, 10, function(e, cube1) {
     child.cube(5, 5, 5, 10, 10, 10, function(e, cube2) {
-      child.op_union(cube1.value[0].uint32_value, cube2.value[0].uint32_value, function(e, unioned) {
-        t.equal(unioned.value[0].type, ENUM('SHAPE_HANDLE'));
-        t.ok(unioned.value[0].uint32_value !== 0);
+      child.op_union(cube1, cube2, function(e, unioned) {
+        t.equal(unioned.id, 3)
 
         var out = tmpdir + 'op_union.stl'
 
-        child.export_stl(out, unioned.value[0].uint32_value, function(e, result) {
-          t.equal(result.value[0].type, ENUM('BOOL'));
-          t.equal(result.value[0].bool_value, true);
+        child.export_stl(out, unioned, function(e, result) {
+          t.equal(result, true)
 
           var obj = stl.toObject(fs.readFileSync(out).toString());
           t.equal(obj.facets.length, 36);
@@ -241,15 +284,12 @@ test('op_union - 3 cubes', function(child, t) {
   child.cube(0, 0, 0, 10, 10, 10, function(e, cube1) {
     child.cube(5, 5, 5, 10, 10, 10, function(e, cube2) {
       child.cube(-5, -5, -5, 10, 10, 5, function(e, cube3) {
-        child.op_union(cube1.value[0].uint32_value, cube2.value[0].uint32_value, cube3.value[0].uint32_value, function(e, unioned) {
-          t.equal(unioned.value[0].type, ENUM('SHAPE_HANDLE'));
-          t.ok(unioned.value[0].uint32_value !== 0);
+        child.op_union(cube1, cube2, cube3, function(e, unioned) {
 
           var out = tmpdir + 'op_union.3cubes.stl';
 
-          child.export_stl(out, unioned.value[0].uint32_value, function(e, result) {
-            t.equal(result.value[0].type, ENUM('BOOL'));
-            t.equal(result.value[0].bool_value, true);
+          child.export_stl(out, unioned, function(e, result) {
+            t.equal(result, true);
 
             var obj = stl.toObject(fs.readFileSync(out).toString());
             t.equal(obj.facets.length, 56);
@@ -264,8 +304,8 @@ test('op_union - 3 cubes', function(child, t) {
 test('op_union - invalid handle in loop', function(child, t) {
   child.cube(0, 0, 0, 10, 10, 10, function(e, cube1) {
     child.cube(5, 5, 5, 10, 10, 10, function(e, cube2) {
-      child.op_union(cube1.value[0].uint32_value, cube2.value[0].uint32_value, 0, function(e, r) {
-        t.equal(r.value[0].type, ENUM('ERROR'));
+      child.op_union(cube1, cube2, { id: 0 }, function(e, r) {
+        t.ok(e)
         t.end();
       });
     });
@@ -275,8 +315,8 @@ test('op_union - invalid handle in loop', function(child, t) {
 test('op_union - invalid handle in loop', function(child, t) {
   child.cube(0, 0, 0, 10, 10, 10, function(e, cube1) {
     child.cube(5, 5, 5, 10, 10, 10, function(e, cube2) {
-      child.op_union(cube1.value[0].uint32_value, cube2.value[0].uint32_value, 0, function(e, r) {
-        t.equal(r.value[0].type, ENUM('ERROR'));
+      child.op_union(cube1, cube2, 0, function(e, r) {
+        t.ok(e);
         t.end();
       });
     });
@@ -286,15 +326,13 @@ test('op_union - invalid handle in loop', function(child, t) {
 test('op_cut - two cubes', function(child, t) {
   child.cube(0, 0, 0, 20, 20, 10, function(e, cube1) {
     child.cube(10, 10, 0, 5, 5, 20, function(e, cube2) {
-      child.op_cut(cube1.value[0].uint32_value, cube2.value[0].uint32_value, function(e, cut) {
-        t.equal(cut.value[0].type, ENUM('SHAPE_HANDLE'));
-        t.ok(cut.value[0].uint32_value !== 0);
+      child.op_cut(cube1, cube2, function(e, cut) {
+        t.ok(cut.id);
 
         var out = tmpdir + 'op_cut.2cubes.stl';
 
-        child.export_stl(out, cut.value[0].uint32_value, function(e, result) {
-          t.equal(result.value[0].type, ENUM('BOOL'));
-          t.equal(result.value[0].bool_value, true);
+        child.export_stl(out, cut, function(e, result) {
+          t.equal(result, true);
 
           var obj = stl.toObject(fs.readFileSync(out).toString());
           t.equal(obj.facets.length, 32);
