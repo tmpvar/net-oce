@@ -1,8 +1,6 @@
 var fs = require('fs');
 var path = require('path');
-var protobuf = require('protocol-buffers/require');
-
-var req = protobuf('../protocol/oce.proto').NetOCE_Response;
+var res = require('net-oce-protocol').objects.NetOCE_Response;
 var b = new Buffer([]);
 
 process.stdin.on('data', function(d) {
@@ -10,6 +8,6 @@ process.stdin.on('data', function(d) {
 });
 
 process.stdin.on('end', function() {
-  console.log(JSON.stringify(req.decode(b), null, '  '));
+  console.log(JSON.stringify(res.decode(b), null, '  '));
 });
 

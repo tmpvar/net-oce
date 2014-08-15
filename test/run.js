@@ -1,8 +1,7 @@
 var fs = require('fs');
 var path = require('path');
-var protobuf = require('protocol-buffers/require');
 
-var req = protobuf('../protocol/oce.proto').NetOCE_Request;
+var req = require('net-oce-protocol').objects.NetOCE_Request;
 
 var buf = req.encode({
   method: 0,

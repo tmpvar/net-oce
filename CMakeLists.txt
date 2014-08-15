@@ -21,7 +21,7 @@ include_directories(
   ${CMAKE_BINARY_DIR}
 )
 
-file(GLOB ProtoFiles "${CMAKE_CURRENT_SOURCE_DIR}/protocol/*.proto")
+file(GLOB ProtoFiles "${CMAKE_CURRENT_SOURCE_DIR}/node_modules/net-oce-protocol/*.proto")
 protobuf_generate_cpp(ProtoSources ProtoHeaders ${ProtoFiles})
 
 add_executable(
