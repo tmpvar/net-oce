@@ -28,7 +28,7 @@ HANDLER(export_stl, "string, handle..") {
 
       TopoDS_Shape shape = editor->getShape(handle);
       if (shape.IsNull()) {
-        HANDLER_ERROR("specified shape does not exist")
+        HANDLER_ERROR("specified object does not exist")
         return true;
       }
 
@@ -44,10 +44,7 @@ HANDLER(export_stl, "string, handle..") {
     value->set_type(NetOCE_Value::BOOL);
     value->set_bool_value(1);
   } else {
-    // return a boolean false
-    NetOCE_Value *value = res->add_value();
-    value->set_type(NetOCE_Value::BOOL);
-    value->set_bool_value(0);
+    HANDLER_ERROR("scene has no objects")
   }
 
   return true;
