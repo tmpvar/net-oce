@@ -19,9 +19,8 @@ class NetOCE_Editor {
     uint32_t addShape(TopoDS_Shape shape) {
       this->shape_index++;
 
-      this->shapes->insert(
-        make_pair<uint32_t, TopoDS_Shape>(this->shape_index, shape)
-      );
+      this->shapes->emplace(this->shape_index, shape);
+
       return this->shape_index;
     }
 
