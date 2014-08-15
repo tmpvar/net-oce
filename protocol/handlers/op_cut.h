@@ -2,7 +2,7 @@
 
 #include <BRepAlgoAPI_Cut.hxx>
 
-HANDLER(op_cut) {
+HANDLER(op_cut, "handle, handle") {
 
   int argc = req->argument_size();
 

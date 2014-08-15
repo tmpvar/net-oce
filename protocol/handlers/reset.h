@@ -1,6 +1,6 @@
 #include "handler.h"
 
-HANDLER(reset) {
+HANDLER(reset, "") {
 
   return false;
 }

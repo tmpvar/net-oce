@@ -2,7 +2,7 @@
 
 #include <StlAPI_Writer.hxx>
 
-HANDLER(export_stl) {
+HANDLER(export_stl, "string, handle..") {
   int argc = req->argument_size();
 
   if (argc < 2) {

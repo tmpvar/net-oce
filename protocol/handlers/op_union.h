@@ -2,7 +2,9 @@
 
 #include <BRepAlgoAPI_Fuse.hxx>
 
-HANDLER(op_union) {
+
+
+HANDLER(op_union, "handle, handle..") {
 
   int argc = req->argument_size();
 

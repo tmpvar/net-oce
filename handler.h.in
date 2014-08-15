@@ -6,7 +6,8 @@
   typedef bool (*handler_fn_t) (NetOCE_Editor *, NetOCE_Request *, NetOCE_Response *);
 
 
-  #define HANDLER(name) \
+  #define HANDLER(name, hint) \
+    const char * net_oce_argument_hint_##name = hint;\
     bool net_oce_handler_##name(NetOCE_Editor *editor, NetOCE_Request *req, NetOCE_Response *res)
 
   #define HANDLER_FROM_BASIC(name) net_oce_handler_##name
@@ -24,7 +25,7 @@
 
   #define HANDLER_COUNT /* HANDLER_COUNT */
 
-  HANDLER(inspect) {
+  HANDLER(inspect, "") {
     NetOCE_Value *value;
     NetOCE_Operation *operation;
 /* INSPECT_RESPONSE */

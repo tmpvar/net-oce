@@ -2,7 +2,7 @@
 
 #include <BRepPrimAPI_MakeBox.hxx>
 
-HANDLER(cube) {
+HANDLER(cube, "double, double, double, double, double, double") {
 
   if (req->argument_size() != 6) {
     HANDLER_ERROR("6 arguments required: x y z w d h")

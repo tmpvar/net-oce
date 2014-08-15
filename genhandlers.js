@@ -37,7 +37,8 @@ var inspectResponse = handlers.map(function(handler, i) {
     '    operation = new NetOCE_Operation();',
     '    operation->set_id(' + (i+1) +');',
     '    operation->set_name("' + handler + '");',
-    '    value->set_allocated_operation(operation);'
+    '    operation->set_arguments(net_oce_argument_hint_' + handler + ');',
+    '    value->set_allocated_operation(operation);',
   ].join('\n')
 });
 
@@ -49,4 +50,8 @@ var handlerMap = files.map(function(header) {
 
 r('HANDLER_LINES', handlerMap.join(',\n'));
 
-fs.writeFileSync(process.argv[2], result);
+if (process.argv[2]) {
+  fs.writeFileSync(process.argv[2], result);
+} else {
+  console.log(result);
+}
