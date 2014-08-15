@@ -8,6 +8,6 @@ process.stdin.on('data', function(d) {
 });
 
 process.stdin.on('end', function() {
-  console.log(JSON.stringify(res.decode(b), null, '  '));
+  console.log(JSON.stringify(res.decode(b)));
 });
 

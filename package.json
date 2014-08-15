@@ -3,9 +3,10 @@
   "version": "0.0.0",
   "description": "libuv / protobuf wrapper around oce",
   "dependencies": {
+    "duplexer": "^0.1.1",
+    "net-oce-protocol": "solids/net-oce-protocol",
     "protobuf-schema": "^1.0.1",
-    "protocol-buffers": "^2.3.3",
-    "net-oce-protocol": "solids/net-oce-protocol"
+    "protocol-buffers": "^2.3.3"
   },
   "devDependencies": {
     "stl": "^1.1.0",
