@@ -1,7 +1,7 @@
 var fs = require('fs');
 var path = require('path');
 
-var req = require('net-oce-protocol').objects.NetOCE_Request;
+var req = require('net-oce-protocol').request;
 
 var buf = req.encode({
   method: 0,

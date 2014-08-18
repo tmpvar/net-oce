@@ -1,6 +1,6 @@
 var fs = require('fs');
 var path = require('path');
-var res = require('net-oce-protocol').objects.NetOCE_Response;
+var res = require('net-oce-protocol').response;
 var b = new Buffer([]);
 
 process.stdin.on('data', function(d) {
