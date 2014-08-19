@@ -8,7 +8,12 @@
 #include <google/protobuf/io/zero_copy_stream_impl.h>
 #include <google/protobuf/io/coded_stream.h>
 
-using namespace google::protobuf;
+#include <Message.hxx>
+#include <Message_Messenger.hxx>
+#include <Standard_Macro.hxx>
+#include <Message_PrinterOStream.hxx>
+
+using namespace google;
 
 uv_loop_t * loop;
 uv_pipe_t stdin_pipe, stdout_pipe;
@@ -37,8 +42,8 @@ void read_stdin(uv_stream_t *stream, ssize_t nread, uv_buf_t buffer) {
       NetOCE_Request req;
       NetOCE_Response res;
 
-      io::ArrayInputStream arr(buffer.base, nread);
-      io::CodedInputStream input(&arr);
+      protobuf::io::ArrayInputStream arr(buffer.base, nread);
+      protobuf::io::CodedInputStream input(&arr);
 
       req.ParseFromCodedStream(&input);
 
@@ -71,6 +76,10 @@ int main() {
 
   GOOGLE_PROTOBUF_VERIFY_VERSION;
 
+  // turn off OCE's stdout printer
+  Message::DefaultMessenger()->RemovePrinters(STANDARD_TYPE(Message_PrinterOStream));
+
+
   // kick off the uv event loop and rig up stdio
   loop = uv_default_loop();
 
@@ -82,7 +91,7 @@ int main() {
 
   uv_run(loop, UV_RUN_DEFAULT);
 
-  ShutdownProtobufLibrary();
+  protobuf::ShutdownProtobufLibrary();
 
   return 0;
 }
