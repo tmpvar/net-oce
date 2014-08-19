@@ -25,24 +25,25 @@ typedef struct {
 NetOCE_Editor editor;
 
 /* returns a buffer instance for storing incoming stdin lines */
-uv_buf_t alloc_buffer(uv_handle_t *handle, size_t size) {
-  return uv_buf_init((char *) malloc(size), size);
+void alloc_buffer(uv_handle_t *handle, size_t size, uv_buf_t* buf) {
+  buf->base = (char *)malloc(size);
+  buf->len = size;
 }
 
 void write_cb(uv_fs_t *req) {
   uv_fs_req_cleanup(req);
 }
 
-void read_stdin(uv_stream_t *stream, ssize_t nread, uv_buf_t buffer) {
+void read_stdin(uv_stream_t *stream, ssize_t nread, const uv_buf_t *buffer) {
   // TODO: handle splits in buffer
   //       see: http://stackoverflow.com/questions/9496101/protocol-buffer-over-socket-in-c
   if (nread > -1) {
-    if (buffer.base) {
+    if (buffer->base) {
 
       NetOCE_Request req;
       NetOCE_Response res;
 
-      protobuf::io::ArrayInputStream arr(buffer.base, nread);
+      protobuf::io::ArrayInputStream arr(buffer->base, nread);
       protobuf::io::CodedInputStream input(&arr);
 
       req.ParseFromCodedStream(&input);
@@ -54,18 +55,20 @@ void read_stdin(uv_stream_t *stream, ssize_t nread, uv_buf_t buffer) {
 
         uv_fs_t write_req;
 
+        uv_buf_t buf = uv_buf_init(bytes, size);
+
         uv_fs_write(
           uv_default_loop(),
           &write_req,
           1,
-          bytes,
-          size,
+          &buf,
+          1,
           -1 /*offset*/,
           write_cb
         );
       }
 
-      free(buffer.base);
+      free(buffer->base);
     }
   } else {
     // TODO: close up shop, this process is going down
