@@ -17,10 +17,8 @@ using namespace google;
 
 uv_loop_t * loop;
 uv_pipe_t stdin_pipe, stdout_pipe;
-typedef struct {
-  uv_write_t req;
-  uv_buf_t buf;
-} write_req_t;
+
+uv_fs_t write_req;
 
 NetOCE_Editor editor;
 
@@ -52,8 +50,6 @@ void read_stdin(uv_stream_t *stream, ssize_t nread, const uv_buf_t *buffer) {
         int size = res.ByteSize();
         char *bytes = (char *)malloc(size);
         bool result = res.SerializeToArray((void *)bytes, size);
-
-        uv_fs_t write_req;
 
         uv_buf_t buf = uv_buf_init(bytes, size);
 
