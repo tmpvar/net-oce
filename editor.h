@@ -35,6 +35,11 @@ class NetOCE_Editor {
       }
     }
 
+    void setShape(uint32_t handle, TopoDS_Shape shape) {
+      // TODO: we should probably unref the original
+      this->shapes->at(handle) = shape;
+    }
+
     unordered_map<uint32_t, TopoDS_Shape> *shapes;
   protected:
     uint32_t shape_index;
