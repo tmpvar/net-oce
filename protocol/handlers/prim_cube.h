@@ -2,7 +2,7 @@
 
 #include <BRepPrimAPI_MakeBox.hxx>
 
-HANDLER(cube, "double") {
+HANDLER(prim_cube, "double") {
 
   if (req->argument_size() != 3) {
     HANDLER_ERROR("r argument required: radius")

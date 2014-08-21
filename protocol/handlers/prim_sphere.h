@@ -2,7 +2,7 @@
 
 #include <BRepPrimAPI_MakeSphere.hxx>
 
-HANDLER(sphere, "double, double, double, double") {
+HANDLER(prim_sphere, "double, double, double, double") {
 
   if (req->argument_size() != 4) {
     HANDLER_ERROR("4 arguments required: cx cy cz radius")

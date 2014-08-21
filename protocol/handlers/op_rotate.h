@@ -2,7 +2,7 @@
 
 #include <BRepBuilderAPI_Transform.hxx>
 
-HANDLER(rotate, "double, double, double, handle") {
+HANDLER(op_rotate, "double, double, double, handle") {
 
   if (req->argument_size() != 4) {
     HANDLER_ERROR("4 arguments required (degrees): rx ry rz handle")

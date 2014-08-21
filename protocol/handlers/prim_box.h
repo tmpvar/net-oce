@@ -2,7 +2,7 @@
 
 #include <BRepPrimAPI_MakeBox.hxx>
 
-HANDLER(box, "double, double, double") {
+HANDLER(prim_box, "double, double, double") {
 
   if (req->argument_size() != 3) {
     HANDLER_ERROR("3 arguments required: width(x) depth(y) height(z)")

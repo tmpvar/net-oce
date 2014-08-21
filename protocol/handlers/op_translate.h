@@ -2,7 +2,7 @@
 
 #include <BRepBuilderAPI_Transform.hxx>
 
-HANDLER(translate, "double, double, double, handle") {
+HANDLER(op_translate, "double, double, double, handle") {
 
   if (req->argument_size() != 4) {
     HANDLER_ERROR("4 arguments required: x y z handle")

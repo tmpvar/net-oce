@@ -2,7 +2,7 @@
 
 #include <BRepBuilderAPI_Copy.hxx>
 
-HANDLER(copy, "handle") {
+HANDLER(op_copy, "handle") {
 
   if (req->argument_size() != 1) {
     HANDLER_ERROR("1 argument required: handle")
