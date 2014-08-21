@@ -1,6 +1,9 @@
 #include "handler.h"
 
 #include <BRepTools.hxx>
+#include <TopoDS_Compound.hxx>
+
+#include <BRep_Builder.hxx>
 
 HANDLER(export_brep, "string, handle..") {
   int argc = req->argument_size();

@@ -1,6 +1,7 @@
 #include "handler.h"
 
 #include <STEPControl_Writer.hxx>
+#include <TopoDS_Compound.hxx>
 
 HANDLER(export_step, "string, handle..") {
   int argc = req->argument_size();

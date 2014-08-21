@@ -1,6 +1,8 @@
 #include "handler.h"
 
 #include <StlAPI_Writer.hxx>
+#include <TopoDS_Compound.hxx>
+
 
 HANDLER(export_stl, "string, handle..") {
   int argc = req->argument_size();
