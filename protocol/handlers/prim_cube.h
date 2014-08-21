@@ -4,8 +4,8 @@
 
 HANDLER(prim_cube, "double") {
 
-  if (req->argument_size() != 3) {
-    HANDLER_ERROR("r argument required: radius")
+  if (req->argument_size() != 1) {
+    HANDLER_ERROR("1 argument required: radius")
     return true;
   }
 
