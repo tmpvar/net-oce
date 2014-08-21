@@ -22,14 +22,12 @@ HANDLER(op_translate, "double, double, double, handle") {
 
   gp_Trsf trsf;
   trsf.SetTranslation(gp_Vec(x, y, z));
-  BRepBuilderAPI_Transform brep(shape, trsf, Standard_False);
+  BRepBuilderAPI_Transform brep(shape, trsf, Standard_True);
   brep.Build();
-
-  editor->setShape(handle, brep.Shape());
 
   NetOCE_Value *val = res->add_value();
   val->set_type(NetOCE_Value::SHAPE_HANDLE);
-  val->set_uint32_value(handle);
+  val->set_uint32_value(editor->addShape(brep.Shape()));
 
   return true;
 }

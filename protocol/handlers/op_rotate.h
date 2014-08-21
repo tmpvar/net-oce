@@ -25,13 +25,12 @@ HANDLER(op_rotate, "double, double, double, handle") {
   trY.SetRotation(gp::OY(), y);
   trZ.SetRotation(gp::OZ(), z);
   trsf = trX * trY * trZ;
-  BRepBuilderAPI_Transform transform(shape, trsf, false);
+  BRepBuilderAPI_Transform transform(shape, trsf, true);
 
-  editor->setShape(handle, transform.Shape());
 
   NetOCE_Value *val = res->add_value();
   val->set_type(NetOCE_Value::SHAPE_HANDLE);
-  val->set_uint32_value(handle);
+  val->set_uint32_value(editor->addShape(transform.Shape()));
 
   return true;
 }
