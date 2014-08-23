@@ -36,7 +36,6 @@ function test(name, fn) {
       if (e) throw e;
 
       _test(name, function(t) {
-        console.log('d')
 
         var end = t.end.bind(t);
         var ended = false;
@@ -241,9 +240,7 @@ test('cube - 10 in one tick', function(methods, t) {
   function after(e, r) {
     t.ok(!e && r);
     seen++;
-    console.log(seen, 'vs', total);
     if (seen === total) {
-
       t.end();
     }
   }
@@ -267,7 +264,6 @@ _test('partial length message', function(t) {
     setTimeout(function write() {
       var slice = buffer.slice(where, where+1);
       stream.write(slice);
-      console.log(where, slice.length, buffer.slice(where).length)
       where++;
 
       if (where < buffer.length) {
