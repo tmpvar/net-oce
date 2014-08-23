@@ -17,6 +17,8 @@ void NetOCE_Editor::reset() {
     printf("clean\n");
   }
 
+
+  this->shape_index = 0;
   this->shapes->clear();
 }
 
