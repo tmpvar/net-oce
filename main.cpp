@@ -113,13 +113,8 @@ bool parse(char *buf, ssize_t size) {
 
         req.ParseFromArray(current, parser_message_size);
 
-        if (editor.handleRequest(&req, &res)) {
-          respond(res);
-        } else {
-          // TODO: turn this into a proper error.
-          fprintf(stderr, "oh no, something bad happened with a request\n");
-          assert(0);
-        }
+        editor.handleRequest(&req, &res);
+        respond(res);
 
         parser_message_location = 0;
         parser_message_size_location = 0;
