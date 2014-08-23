@@ -12,12 +12,6 @@ NetOCE_Editor::~NetOCE_Editor() {
 }
 
 void NetOCE_Editor::reset() {
-  unordered_map<uint32_t, TopoDS_Shape>::iterator it = this->shapes->begin();
-  for (; it != this->shapes->end(); ++it) {
-    printf("clean\n");
-  }
-
-
   this->shape_index = 0;
   this->shapes->clear();
 }
