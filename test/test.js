@@ -113,7 +113,7 @@ test('stl export - 2 cubes', function(methods, t) {
 
     methods.prim_cube(10, function(e, cube2) {
 
-      methods.op_translate(20, 0, 0, cube2, function(e, cube3) {
+      methods.op_translate(cube2, 20, 0, 0, function(e, cube3) {
         t.equal(cube3.id, 3);
 
         var out = tmpdir + 'two-cubes.stl';
