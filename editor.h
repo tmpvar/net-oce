@@ -14,6 +14,7 @@ class NetOCE_Editor {
     ~NetOCE_Editor();
 
     void reset();
+
     bool handleRequest(NetOCE_Request *request, NetOCE_Response *response);
 
     uint32_t addShape(TopoDS_Shape shape) {
