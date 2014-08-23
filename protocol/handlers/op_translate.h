@@ -2,17 +2,18 @@
 
 #include <BRepBuilderAPI_Transform.hxx>
 
-HANDLER(op_translate, "double, double, double, handle") {
+HANDLER(op_translate, "handle, double, double, double") {
 
   if (req->argument_size() != 4) {
-    HANDLER_ERROR("4 arguments required: x y z handle")
+    HANDLER_ERROR("4 arguments required: handle x y z")
     return true;
   }
 
-  double x = req->argument(0).double_value();
-  double y = req->argument(1).double_value();
-  double z = req->argument(2).double_value();
-  uint32_t handle = req->argument(3).uint32_value();
+  uint32_t handle = req->argument(0).uint32_value();
+  double x = req->argument(1).double_value();
+  double y = req->argument(2).double_value();
+  double z = req->argument(3).double_value();
+
 
   TopoDS_Shape shape = editor->getShape(handle);
   if (shape.IsNull()) {

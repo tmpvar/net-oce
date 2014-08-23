@@ -2,17 +2,19 @@
 
 #include <BRepBuilderAPI_Transform.hxx>
 
-HANDLER(op_rotate, "double, double, double, handle") {
+HANDLER(op_rotate, "handle, double, double, double") {
 
   if (req->argument_size() != 4) {
-    HANDLER_ERROR("4 arguments required (degrees): rx ry rz handle")
+    HANDLER_ERROR("4 arguments required (degrees):handle rx ry rz")
     return true;
   }
 
-  double x = req->argument(0).double_value() * M_PI/180;
-  double y = req->argument(1).double_value() * M_PI/180;
-  double z = req->argument(2).double_value() * M_PI/180;
-  uint32_t handle = req->argument(3).uint32_value();
+
+  uint32_t handle = req->argument(0).uint32_value();
+  double x = req->argument(1).double_value() * M_PI/180;
+  double y = req->argument(2).double_value() * M_PI/180;
+  double z = req->argument(3).double_value() * M_PI/180;
+
 
   TopoDS_Shape shape = editor->getShape(handle);
   if (shape.IsNull()) {
