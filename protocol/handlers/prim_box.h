@@ -9,16 +9,16 @@ HANDLER(prim_box, "double, double, double") {
     return true;
   }
 
-  double w = req->argument(0).double_value()/2;
-  double h = req->argument(1).double_value()/2;
-  double d = req->argument(2).double_value()/2;
+  double w = req->argument(0).double_value();
+  double h = req->argument(1).double_value();
+  double d = req->argument(2).double_value();
 
 
-  TopoDS_Solid cube = BRepPrimAPI_MakeBox(gp_Pnt(-w, -h, -d), gp_Pnt(w, h, d));
+  TopoDS_Solid box = BRepPrimAPI_MakeBox(gp_Pnt(-w/2, -h/2, -d/2), w, h, d);
 
   NetOCE_Value *val = res->add_value();
   val->set_type(NetOCE_Value::SHAPE_HANDLE);
-  val->set_uint32_value(editor->addShape(cube));
+  val->set_uint32_value(editor->addShape(box));
 
   return true;
 }
