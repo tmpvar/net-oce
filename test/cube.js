@@ -1,5 +1,8 @@
 var request = require('net-oce-protocol').request;
 
+for (var i = 0; i<10; i++) {
+
+
 process.stdout.write(request.encode({
   method: 1,
   seq: 1,
@@ -9,3 +12,5 @@ process.stdout.write(request.encode({
     { type : 1, double_value: 10 }
   ]
 }))
+
+}
