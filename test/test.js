@@ -272,3 +272,14 @@ _test('partial length message', function(t) {
     }, 100);
   });
 });
+
+test('extract - stl..', function(methods, t) {
+  methods.prim_cube(10, function(e, cube) {
+    t.ok(cube);
+    console.log(cube);
+    methods.extract_stl(cube, function(e, r) {
+      console.log('HERE', e, r);
+      t.end();
+    });
+  })
+});
