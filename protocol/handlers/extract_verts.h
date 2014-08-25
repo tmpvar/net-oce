@@ -17,9 +17,7 @@ HANDLER(extract_verts, "handle, handle..") {
     HANDLER_ERROR(">= 1 arguments required: handle, handle..")
     return true;
   }
-fprintf(stderr, "here!!!!\n");
   if (editor->shapes->size()) {
-fprintf(stderr, "editor has shapes!\n");
     TopoDS_Compound compoundShape;
     BRep_Builder builder;
     builder.MakeCompound(compoundShape);
@@ -86,17 +84,9 @@ fprintf(stderr, "tris: %zd, verts: %zd, size: %zd\n", total_triangles, total_tri
       }
     }
 
-    NetOCE_Value *val = res->add_value();
-    val->set_type(NetOCE_Value::BYTES);
-    val->set_bytes_value((float *)buf, total_size);
-
-    val = res->add_value();
-    val->set_type(NetOCE_Value::UINT32);
-    val->set_uint32_value(total_triangles);
-
-    val = res->add_value();
-    val->set_type(NetOCE_Value::BOOL);
-    val->set_bool_value(1);
+    NetOCE_Value *byteVal = res->add_value();
+    byteVal->set_type(NetOCE_Value::BYTES);
+    byteVal->set_bytes_value((float *)buf, total_size);
 
   } else {
     HANDLER_ERROR("please make some shapes first!")
