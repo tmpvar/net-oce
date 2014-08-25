@@ -277,7 +277,7 @@ test('extract verts', function(methods, t) {
   methods.prim_cube(10, function(e, cube) {
     t.ok(cube);
     methods.extract_verts(cube, function(e, r) {
-      t.equal((r[0].length/4)/9, r[1]);
+      t.equal((r.length/4)/9, 12);
       t.end();
     });
   })
