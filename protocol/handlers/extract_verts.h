@@ -9,17 +9,17 @@
 #define MAX2(X, Y)      (  Abs(X) > Abs(Y)? Abs(X) : Abs(Y) )
 #define MAX3(X, Y, Z)   ( MAX2 ( MAX2(X,Y) , Z) )
 
-HANDLER(extract_stl, "handle, handle..") {
+HANDLER(extract_verts, "handle, handle..") {
 
   int argc = req->argument_size();
 
   if (argc < 1) {
-    HANDLER_ERROR("1 arguments required: handle, handle..")
+    HANDLER_ERROR(">= 1 arguments required: handle, handle..")
     return true;
   }
-
+fprintf(stderr, "here!!!!\n");
   if (editor->shapes->size()) {
-
+fprintf(stderr, "editor has shapes!\n");
     TopoDS_Compound compoundShape;
     BRep_Builder builder;
     builder.MakeCompound(compoundShape);
@@ -53,11 +53,16 @@ HANDLER(extract_stl, "handle, handle..") {
     Standard_Real x2, y2, z2;
     Standard_Real x3, y3, z3;
 
-    uint32_t total_size = mesh->NbTriangles() * 9, where = 0;;
+    uint32_t total_triangles = mesh->NbTriangles();
+    uint32_t total_size = total_triangles * 9 * sizeof(float);
+
+fprintf(stderr, "tris: %zd, verts: %zd, size: %zd\n", total_triangles, total_triangles * 9, total_size);
+
+    uint32_t where = 0;
     Standard_Integer domainCount = mesh->NbDomains();
 
     // we lose some precision here...
-    float *buf = (float *)malloc(total_size * sizeof(float));
+    float *buf = (float *)malloc(total_size);
     StlMesh_MeshExplorer explorer(mesh);
 
     // create progress sentry for domains
@@ -83,9 +88,18 @@ HANDLER(extract_stl, "handle, handle..") {
 
     NetOCE_Value *val = res->add_value();
     val->set_type(NetOCE_Value::BYTES);
-    val->set_bytes_value((void *)buf, total_size);
+    val->set_bytes_value((float *)buf, total_size);
+
+    val = res->add_value();
+    val->set_type(NetOCE_Value::UINT32);
+    val->set_uint32_value(total_triangles);
+
+    val = res->add_value();
+    val->set_type(NetOCE_Value::BOOL);
+    val->set_bool_value(1);
+
   } else {
-    assert(0);
+    HANDLER_ERROR("please make some shapes first!")
   }
 
 

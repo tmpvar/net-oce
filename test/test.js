@@ -273,12 +273,11 @@ _test('partial length message', function(t) {
   });
 });
 
-test('extract - stl..', function(methods, t) {
+test('extract verts', function(methods, t) {
   methods.prim_cube(10, function(e, cube) {
     t.ok(cube);
-    console.log(cube);
-    methods.extract_stl(cube, function(e, r) {
-      console.log('HERE', e, r);
+    methods.extract_verts(cube, function(e, r) {
+      t.equal((r[0].length/4)/9, r[1]);
       t.end();
     });
   })
