@@ -43,8 +43,8 @@ HANDLER(extract_verts, "handle, handle..") {
 
     total.Get(aXmin, aYmin, aZmin, aXmax, aYmax, aZmax);
 
-    theDeflection = MAX3(aXmax-aXmin , aYmax-aYmin , aZmax-aZmin) * 0.001;
-    StlTransfer::BuildIncrementalMesh(compoundShape, .001, true, mesh);
+    theDeflection = MAX3(aXmax-aXmin , aYmax-aYmin , aZmax-aZmin) * 0.01;
+    StlTransfer::BuildIncrementalMesh(compoundShape, .1, true, mesh);
 
 
     Standard_Real x1, y1, z1;
