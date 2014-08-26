@@ -276,7 +276,7 @@ _test('partial length message', function(t) {
 test('extract verts', function(methods, t) {
   methods.prim_cube(10, function(e, cube) {
     t.ok(cube);
-    methods.extract_verts(cube, function(e, r) {
+    methods.shape_display(cube, function(e, r) {
       t.equal((r.length/4)/9, 12);
       t.end();
     });
