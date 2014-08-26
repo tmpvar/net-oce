@@ -52,12 +52,10 @@ HANDLER(extract_verts, "handle, handle..") {
     Standard_Real x3, y3, z3;
 
     uint32_t total_triangles = mesh->NbTriangles();
-    uint32_t total_size = total_triangles * 9 * sizeof(float);
-
-fprintf(stderr, "tris: %zd, verts: %zd, size: %zd\n", total_triangles, total_triangles * 9, total_size);
+    uint32_t total_size = mesh->NbTriangles() * 9 * sizeof(float);
+    Standard_Integer domainCount = mesh->NbDomains();
 
     uint32_t where = 0;
-    Standard_Integer domainCount = mesh->NbDomains();
 
     // we lose some precision here...
     float *buf = (float *)malloc(total_size);
@@ -65,10 +63,15 @@ fprintf(stderr, "tris: %zd, verts: %zd, size: %zd\n", total_triangles, total_tri
 
     // create progress sentry for domains
 
-    for (uint32_t nbd = 1; nbd <= domainCount; nbd++) {
+    for (Standard_Integer nbd = 1; nbd <= domainCount; nbd++) {
 
       for (explorer.InitTriangle(nbd); explorer.MoreTriangle(); explorer.NextTriangle()) {
-        explorer.TriangleVertices (x1,y1,z1,x2,y2,z2,x3,y3,z3);
+        explorer.TriangleVertices (
+          x1, y1, z1,
+          x2, y2, z2,
+          x3, y3, z3
+        );
+
 
         buf[where++] = x1;
         buf[where++] = y1;
@@ -86,7 +89,7 @@ fprintf(stderr, "tris: %zd, verts: %zd, size: %zd\n", total_triangles, total_tri
 
     NetOCE_Value *byteVal = res->add_value();
     byteVal->set_type(NetOCE_Value::BYTES);
-    byteVal->set_bytes_value((float *)buf, total_size);
+    byteVal->set_bytes_value(buf, total_size);
 
   } else {
     HANDLER_ERROR("please make some shapes first!")
