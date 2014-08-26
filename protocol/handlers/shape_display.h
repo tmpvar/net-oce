@@ -52,13 +52,15 @@ HANDLER(shape_display, "handle, handle..") {
     Standard_Real x3, y3, z3;
 
     uint32_t total_triangles = mesh->NbTriangles();
-    uint32_t total_size = mesh->NbTriangles() * 9 * sizeof(float);
+    uint32_t position_size = mesh->NbTriangles() * 9 * sizeof(float);
+    uint32_t normal_size = mesh->NbTriangles() * 3 * sizeof(float);
     Standard_Integer domainCount = mesh->NbDomains();
 
-    uint32_t where = 0;
+    uint32_t position_where = 0, normal_where = 0;
 
     // we lose some precision here...
-    float *buf = (float *)malloc(total_size);
+    float *position = (float *)malloc(position_size);
+    float *normal = (float *)malloc(normal_size);
     StlMesh_MeshExplorer explorer(mesh);
 
     // create progress sentry for domains
@@ -72,24 +74,42 @@ HANDLER(shape_display, "handle, handle..") {
           x3, y3, z3
         );
 
+        gp_XYZ v12 ((x2-x1), (y2-y1), (z2-z1));
+        gp_XYZ v13 ((x3-x1), (y3-y1), (z3-z1));
+        gp_XYZ norm = v12 ^ v13;
+        Standard_Real mod = norm.Modulus ();
+        if (mod > gp::Resolution()) {
+          norm.Divide(mod);
+        } else {
+          norm.SetCoord (0., 0., 0.);
+        }
 
-        buf[where++] = x1;
-        buf[where++] = y1;
-        buf[where++] = z1;
+        position[position_where++] = x1;
+        position[position_where++] = y1;
+        position[position_where++] = z1;
 
-        buf[where++] = x2;
-        buf[where++] = y2;
-        buf[where++] = z2;
+        position[position_where++] = x2;
+        position[position_where++] = y2;
+        position[position_where++] = z2;
 
-        buf[where++] = x3;
-        buf[where++] = y3;
-        buf[where++] = z3;
+        position[position_where++] = x3;
+        position[position_where++] = y3;
+        position[position_where++] = z3;
+
+        normal[normal_where++] = norm.X();
+        normal[normal_where++] = norm.Y();
+        normal[normal_where++] = norm.Z();
+
       }
     }
 
-    NetOCE_Value *byteVal = res->add_value();
-    byteVal->set_type(NetOCE_Value::BYTES);
-    byteVal->set_bytes_value(buf, total_size);
+    NetOCE_Value *positionVal = res->add_value();
+    positionVal->set_type(NetOCE_Value::BYTES);
+    positionVal->set_bytes_value(position, position_size);
+
+    NetOCE_Value *normalVal = res->add_value();
+    normalVal->set_type(NetOCE_Value::BYTES);
+    normalVal->set_bytes_value(normal, normal_size);
 
   } else {
     HANDLER_ERROR("please make some shapes first!")
