@@ -52,8 +52,9 @@ HANDLER(shape_display, "handle, handle..") {
     Standard_Real x3, y3, z3;
 
     uint32_t total_triangles = mesh->NbTriangles();
-    uint32_t position_size = mesh->NbTriangles() * 9 * sizeof(float);
-    uint32_t normal_size = mesh->NbTriangles() * 3 * sizeof(float);
+    uint32_t position_size = total_triangles * 9 * sizeof(float);
+    uint32_t normal_size = total_triangles * 9 * sizeof(float);
+
     Standard_Integer domainCount = mesh->NbDomains();
 
     uint32_t position_where = 0, normal_where = 0;
@@ -100,15 +101,22 @@ HANDLER(shape_display, "handle, handle..") {
         normal[normal_where++] = norm.Y();
         normal[normal_where++] = norm.Z();
 
+        normal[normal_where++] = norm.X();
+        normal[normal_where++] = norm.Y();
+        normal[normal_where++] = norm.Z();
+
+        normal[normal_where++] = norm.X();
+        normal[normal_where++] = norm.Y();
+        normal[normal_where++] = norm.Z();
       }
     }
 
     NetOCE_Value *positionVal = res->add_value();
-    positionVal->set_type(NetOCE_Value::BYTES);
+    positionVal->set_type(NetOCE_Value::FLOAT_BUFFER);
     positionVal->set_bytes_value(position, position_size);
 
     NetOCE_Value *normalVal = res->add_value();
-    normalVal->set_type(NetOCE_Value::BYTES);
+    normalVal->set_type(NetOCE_Value::FLOAT_BUFFER);
     normalVal->set_bytes_value(normal, normal_size);
 
   } else {
