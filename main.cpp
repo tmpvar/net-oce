@@ -53,12 +53,13 @@ void respond(NetOCE_Response res) {
 
 
 char *scratch, *current;
-int parser_state = 0, parser_message_size_location = 0;
+int parser_state = 0;
 
-uint32_t parser_message_size = 0, parser_message_location = 0;
-bool parse(char *buf, ssize_t size) {
+uint32_t parser_message_size = 0, parser_message_location = 0, parser_message_size_location = 0;
+uint8_t header_parts[4];
+
+bool parse(uint8_t *buf, ssize_t size) {
   ssize_t diff, to_read;
-
 
   // get buffer, if state is 0 then we need to collect the buffer;
   switch (parser_state) {
@@ -67,9 +68,8 @@ bool parse(char *buf, ssize_t size) {
       if (parser_message_size_location < HEADER_SIZE) {
         diff = HEADER_SIZE - parser_message_size_location;
         to_read = (size < diff) ? size : diff;
-
         for (ssize_t i = 0; i<to_read; i++) {
-          parser_message_size |= buf[0] << ((HEADER_SIZE - parser_message_size_location) * 8);
+          header_parts[parser_message_size_location] = buf[0];
           buf++;
           parser_message_size_location++;
           size--;
@@ -77,6 +77,8 @@ bool parse(char *buf, ssize_t size) {
 
         if (parser_message_size_location < HEADER_SIZE) {
           return false;
+        } else {
+          memcpy(&parser_message_size, header_parts, 4);
         }
       }
 
@@ -127,7 +129,7 @@ bool parse(char *buf, ssize_t size) {
         buf += to_read;
 
         if (size > 0) {
-          return parse(buf, size);
+          return parse((uint8_t *)buf, size);
         } else {
           return false;
         }
@@ -142,8 +144,7 @@ bool parse(char *buf, ssize_t size) {
 void read_stdin(uv_stream_t *stream, ssize_t nread, const uv_buf_t *buffer) {
   if (nread > -1) {
     if (buffer->base) {
-      cerr << "READ: " << nread << endl;
-      parse(buffer->base, nread);
+      parse((uint8_t *)buffer->base, nread);
       free(buffer->base);
     }
   } else {

@@ -2,6 +2,7 @@
 
 #include <StlAPI_Writer.hxx>
 #include <TopoDS_Compound.hxx>
+#include <TopoDS_Builder.hxx>
 
 
 HANDLER(export_stl, "string, handle..") {
@@ -21,7 +22,7 @@ HANDLER(export_stl, "string, handle..") {
     StlAPI_Writer writer;
 
     TopoDS_Compound compoundShape;
-    BRep_Builder builder;
+    TopoDS_Builder builder;
     builder.MakeCompound(compoundShape);
 
     uint32_t handle;
