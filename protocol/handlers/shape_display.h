@@ -36,14 +36,16 @@ HANDLER(shape_display, "handle, handle..") {
     }
 
     Handle_StlMesh_Mesh mesh = new StlMesh_Mesh;
-    Standard_Real aXmin, aYmin, aZmin, aXmax, aYmax, aZmax, theDeflection;
+
+    double bounds[6];
+    float theDeflection;
     Bnd_Box total;
 
     BRepBndLib::Add(compoundShape, total);
 
-    total.Get(aXmin, aYmin, aZmin, aXmax, aYmax, aZmax);
+    total.Get(bounds[0], bounds[1], bounds[2], bounds[3], bounds[4], bounds[5]);
 
-    theDeflection = MAX3(aXmax-aXmin , aYmax-aYmin , aZmax-aZmin) * 0.01;
+    theDeflection = MAX3(bounds[3]-bounds[0] , bounds[4]-bounds[1] , bounds[5]-bounds[2]) * 0.01;
     StlTransfer::BuildIncrementalMesh(compoundShape, .1, true, mesh);
 
 
@@ -118,6 +120,10 @@ HANDLER(shape_display, "handle, handle..") {
     NetOCE_Value *normalVal = res->add_value();
     normalVal->set_type(NetOCE_Value::FLOAT_BUFFER);
     normalVal->set_bytes_value(normal, normal_size);
+
+    NetOCE_Value *boundVal = res->add_value();
+    boundVal->set_type(NetOCE_Value::DOUBLE_BUFFER);
+    boundVal->set_bytes_value(bounds, 6*sizeof(double));
 
   } else {
     HANDLER_ERROR("please make some shapes first!")
