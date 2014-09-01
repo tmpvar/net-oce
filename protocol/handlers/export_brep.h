@@ -38,6 +38,8 @@ HANDLER(export_brep, "string, handle..") {
 
     BRepTools::Write(compoundShape, filename, NULL);
 
+    compoundShape.Nullify();
+
     // return a boolean true
     NetOCE_Value *value = res->add_value();
     value->set_type(NetOCE_Value::BOOL);

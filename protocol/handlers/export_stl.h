@@ -42,6 +42,8 @@ HANDLER(export_stl, "string, handle..") {
     writer.SetCoefficient(0.01);
     writer.Write(compoundShape, filename, true);
 
+    compoundShape.Nullify();
+
     // return a boolean true
     NetOCE_Value *value = res->add_value();
     value->set_type(NetOCE_Value::BOOL);

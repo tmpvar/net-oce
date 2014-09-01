@@ -40,6 +40,8 @@ HANDLER(export_step, "string, handle..") {
 
     writer.Write(filename);
 
+    compoundShape.Nullify();
+
     // compare with IFSelect_RetDone
 
     // return a boolean true
