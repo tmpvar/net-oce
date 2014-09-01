@@ -9,10 +9,9 @@ HANDLER(prim_cube, "double") {
     return true;
   }
 
-  double r = req->argument(0).double_value()/2;
+  double r = fabs(req->argument(0).double_value()/2);
 
   TopoDS_Solid cube = BRepPrimAPI_MakeBox(gp_Pnt(-r, -r, -r), gp_Pnt(r, r, r));
-
   NetOCE_Value *val = res->add_value();
   val->set_type(NetOCE_Value::SHAPE_HANDLE);
   val->set_uint32_value(editor->addShape(cube));

@@ -10,8 +10,8 @@ HANDLER(prim_cylinder, "double, double") {
     return true;
   }
 
-  double r = req->argument(0).double_value();
-  double h = req->argument(1).double_value();
+  double r = fabs(req->argument(0).double_value());
+  double h = fabs(req->argument(1).double_value());
 
   TopoDS_Solid cylinder = BRepPrimAPI_MakeCylinder(
     gp_Ax2(gp_Pnt(0, -h/2, 0), gp_Dir(0, 1, 0), gp_Dir(1, 0, 0)), r, h

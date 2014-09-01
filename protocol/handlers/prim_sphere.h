@@ -9,7 +9,7 @@ HANDLER(prim_sphere, "double") {
     return true;
   }
 
-  double r = req->argument(0).double_value();
+  double r = fabs(req->argument(0).double_value());
 
   TopoDS_Solid sphere = BRepPrimAPI_MakeSphere(gp_Pnt(0, 0, 0), r);
 
