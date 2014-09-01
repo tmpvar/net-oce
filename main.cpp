@@ -22,6 +22,11 @@ uv_pipe_t stdin_pipe, stdout_pipe;
 
 NetOCE_Editor editor;
 
+typedef struct {
+  uv_fs_t req;
+  uv_buf_t buf;
+} write_req_t;
+
 /* returns a buffer instance for storing incoming stdin lines */
 void alloc_buffer(uv_handle_t *handle, size_t size, uv_buf_t* buf) {
   buf->base = (char *)malloc(size);
@@ -29,26 +34,26 @@ void alloc_buffer(uv_handle_t *handle, size_t size, uv_buf_t* buf) {
 }
 
 void write_cb(uv_fs_t *req) {
-  free(req->ptr); // is this the buffer?
+  write_req_t *r = (write_req_t *)req;
+  free(r->buf.base);
   uv_fs_req_cleanup(req);
-  free(req);
+  free(r);
 }
 
 
 void respond(NetOCE_Response res) {
-  uv_fs_t *write_req = (uv_fs_t *)malloc(sizeof(uv_fs_t));
+  write_req_t *write_req = (write_req_t *)malloc(sizeof(write_req_t));
 
   uint32_t size = res.ByteSize();
   char *bytes = (char *)malloc(size+HEADER_SIZE);
   bool result = res.SerializeToArray((void *)(bytes + HEADER_SIZE), size);
-
   fprintf(stderr, "write %zd bytes to stdout\n", size+HEADER_SIZE);
 
   memcpy(bytes, &size, HEADER_SIZE);
 
-  uv_buf_t buf = uv_buf_init(bytes, size+4);
+  write_req->buf = uv_buf_init(bytes, size+4);
 
-  uv_fs_write(uv_default_loop(), write_req, 1, &buf, 1, -1, write_cb);
+  uv_fs_write(uv_default_loop(), (uv_fs_t *)write_req, 1, &write_req->buf, 1, -1, write_cb);
 }
 
 
@@ -116,7 +121,9 @@ bool parse(uint8_t *buf, ssize_t size) {
         req.ParseFromArray(current, parser_message_size);
 
         editor.handleRequest(&req, &res);
+        req.Clear();
         respond(res);
+        res.Clear();
 
         parser_message_location = 0;
         parser_message_size_location = 0;

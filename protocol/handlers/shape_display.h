@@ -113,17 +113,24 @@ HANDLER(shape_display, "handle, handle..") {
       }
     }
 
+    mesh->Clear();
+    mesh.Nullify();
+    compoundShape.Nullify();
+
+
     NetOCE_Value *positionVal = res->add_value();
     positionVal->set_type(NetOCE_Value::FLOAT_BUFFER);
     positionVal->set_bytes_value(position, position_size);
+    free(position);
 
     NetOCE_Value *normalVal = res->add_value();
     normalVal->set_type(NetOCE_Value::FLOAT_BUFFER);
     normalVal->set_bytes_value(normal, normal_size);
+    free(normal);
 
     NetOCE_Value *boundVal = res->add_value();
     boundVal->set_type(NetOCE_Value::DOUBLE_BUFFER);
-    boundVal->set_bytes_value(bounds, 6*sizeof(double));
+    boundVal->set_bytes_value(bounds, sizeof(bounds));
 
   } else {
     HANDLER_ERROR("please make some shapes first!")
