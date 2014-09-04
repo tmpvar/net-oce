@@ -12,6 +12,11 @@ NetOCE_Editor::~NetOCE_Editor() {
 }
 
 void NetOCE_Editor::reset() {
+
+  for ( auto it = this->shapes->begin(); it != this->shapes->end(); ++it ) {
+    it->second.Nullify();
+  }
+
   this->shape_index = 0;
   this->shapes->clear();
 }
