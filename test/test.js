@@ -284,5 +284,31 @@ test('display verts', function(methods, t) {
       t.equal(r.bounds.length, 6); // bounding box
       t.end();
     });
-  })
+  });
+});
+
+test('display verts (multiple)', function(methods, t) {
+  methods.prim_cube(10, function(e, cube) {
+    t.ok(!e)
+    t.ok(cube);
+
+    methods.prim_cube(10, function(e, cube2) {
+      t.ok(!e);
+      t.ok(cube2);
+      methods.shape_display(cube, cube2, function(e, r) {
+        t.equal(r.length, 2);
+
+        t.equal(r[0].positions.length/9, 12); // verts
+        t.equal(r[0].normals.length/9, 12); // normals
+        t.equal(r[0].features.length, 12); // features
+        t.equal(r[0].bounds.length, 6); // bounding box
+
+        t.equal(r[1].positions.length/9, 12); // verts
+        t.equal(r[1].normals.length/9, 12); // normals
+        t.equal(r[1].features.length, 12); // features
+        t.equal(r[1].bounds.length, 6); // bounding box
+        t.end();
+      });
+    });
+  });
 });
