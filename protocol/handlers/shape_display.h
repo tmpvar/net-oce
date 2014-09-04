@@ -117,18 +117,24 @@ HANDLER(shape_display, "handle, handle..") {
     mesh.Nullify();
     compoundShape.Nullify();
 
+    NetOCE_Value *object = res->add_value();
+    object->set_type(NetOCE_Value::ARRAY);
 
-    NetOCE_Value *positionVal = res->add_value();
+
+    NetOCE_Value *positionVal = object->add_item();
     positionVal->set_type(NetOCE_Value::FLOAT_BUFFER);
+    positionVal->set_string_value("positions");
     positionVal->set_bytes_value(position, position_size);
     free(position);
 
-    NetOCE_Value *normalVal = res->add_value();
+    NetOCE_Value *normalVal = object->add_item();
+    normalVal->set_string_value("normals");
     normalVal->set_type(NetOCE_Value::FLOAT_BUFFER);
     normalVal->set_bytes_value(normal, normal_size);
     free(normal);
 
-    NetOCE_Value *boundVal = res->add_value();
+    NetOCE_Value *boundVal = object->add_item();
+    boundVal->set_string_value("bounds");
     boundVal->set_type(NetOCE_Value::DOUBLE_BUFFER);
     boundVal->set_bytes_value(bounds, sizeof(bounds));
 

@@ -278,9 +278,9 @@ test('display verts', function(methods, t) {
     t.ok(!e)
     t.ok(cube);
     methods.shape_display(cube, function(e, r) {
-      t.equal((r[0].length)/9, 12); // verts
-      t.equal((r[1].length)/9, 12); // normals
-      t.equal(r[2].length, 6); // bounding box
+      t.equal((r.positions.length)/9, 12); // verts
+      t.equal((r.normals.length)/9, 12); // normals
+      t.equal(r.bounds.length, 6); // bounding box
       t.end();
     });
   })
