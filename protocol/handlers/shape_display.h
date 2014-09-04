@@ -138,7 +138,7 @@ HANDLER(shape_display, "handle, handle..") {
     free(normal);
 
     NetOCE_Value *domainVal = object->add_item();
-    domainVal->set_string_value("cells");
+    domainVal->set_string_value("features");
     domainVal->set_type(NetOCE_Value::UINT32_BUFFER);
     domainVal->set_bytes_value(domains, domain_size);
     free(domains);
