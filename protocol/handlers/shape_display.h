@@ -56,19 +56,21 @@ HANDLER(shape_display, "handle, handle..") {
     uint32_t total_triangles = mesh->NbTriangles();
     uint32_t position_size = total_triangles * 9 * sizeof(float);
     uint32_t normal_size = total_triangles * 9 * sizeof(float);
+    uint32_t domain_size = total_triangles * sizeof(uint32_t);
 
     Standard_Integer domainCount = mesh->NbDomains();
 
-    uint32_t position_where = 0, normal_where = 0;
+    uint32_t position_where = 0, normal_where = 0, domain_where = 0;
 
     // we lose some precision here...
     float *position = (float *)malloc(position_size);
     float *normal = (float *)malloc(normal_size);
+    uint32_t *domains = (uint32_t *)malloc(domain_size);
     StlMesh_MeshExplorer explorer(mesh);
 
     // create progress sentry for domains
 
-    for (Standard_Integer nbd = 1; nbd <= domainCount; nbd++) {
+    for (uint32_t nbd = 1; nbd <= domainCount; nbd++) {
 
       for (explorer.InitTriangle(nbd); explorer.MoreTriangle(); explorer.NextTriangle()) {
         explorer.TriangleVertices (
@@ -86,6 +88,8 @@ HANDLER(shape_display, "handle, handle..") {
         } else {
           norm.SetCoord (0., 0., 0.);
         }
+
+        domains[domain_where++] = nbd;
 
         position[position_where++] = x1;
         position[position_where++] = y1;
@@ -118,7 +122,7 @@ HANDLER(shape_display, "handle, handle..") {
     compoundShape.Nullify();
 
     NetOCE_Value *object = res->add_value();
-    object->set_type(NetOCE_Value::ARRAY);
+    object->set_type(NetOCE_Value::OBJECT);
 
 
     NetOCE_Value *positionVal = object->add_item();
@@ -132,6 +136,12 @@ HANDLER(shape_display, "handle, handle..") {
     normalVal->set_type(NetOCE_Value::FLOAT_BUFFER);
     normalVal->set_bytes_value(normal, normal_size);
     free(normal);
+
+    NetOCE_Value *domainVal = object->add_item();
+    domainVal->set_string_value("cells");
+    domainVal->set_type(NetOCE_Value::UINT32_BUFFER);
+    domainVal->set_bytes_value(domains, domain_size);
+    free(domains);
 
     NetOCE_Value *boundVal = object->add_item();
     boundVal->set_string_value("bounds");
