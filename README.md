@@ -6,16 +6,25 @@ a wrapper around oce that exposes it to stdio (for now)
 
 You'll need a few things to get started..
 
+### ubuntu
+
 ```
-git clone https://github.com/tpaviot/oce.git
-cd oce
-cmake -G Ninja && ninja # or another build system..
-sudo ninja install
+sudo apt-get install build-essential git clang libgl-dev libfreetype6-dev libglu-dev libprotobuf-dev protobuf-compiler
+
+curl http://www.cmake.org/files/v3.0/cmake-3.0.1.tar.gz | tar xz
+cd cmake-3.0.1
+./configure && make && sudo make install
 ```
 
 ### osx
 
 `brew install libuv protobuf`
+
+```
+git clone https://github.com/tpaviot/oce.git
+cd oce
+cmake . && make && sudo make install
+```
 
 ## use
 
