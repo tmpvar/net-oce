@@ -23,8 +23,15 @@ void NetOCE_Editor::reset() {
 
 bool NetOCE_Editor::handleRequest(NetOCE_Request *request, NetOCE_Response *response) {
   // TODO: typechecking on the request
-
-  bool r = net_oce_handlers[request->method()](this, request, response);
+  bool r = true;
+  try {
+    r = net_oce_handlers[request->method()](this, request, response);
+  } catch (Standard_Failure e) {
+    response->Clear();
+    NetOCE_Value *val = response->add_value();
+    val->set_type(NetOCE_Value::ERROR);
+    val->set_string_value(e.GetMessageString());
+  }
 
   // only forward the sequence if the callee has not already done so
   if (r && !response->has_seq()) {
