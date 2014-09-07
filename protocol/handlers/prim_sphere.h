@@ -11,6 +11,11 @@ HANDLER(prim_sphere, "double") {
 
   double r = fabs(req->argument(0).double_value());
 
+  if (r == 0) {
+    HANDLER_ERROR("radius cannot be 0")
+    return true;
+  }
+
   TopoDS_Solid sphere = BRepPrimAPI_MakeSphere(gp_Pnt(0, 0, 0), r);
 
   NetOCE_Value *val = res->add_value();

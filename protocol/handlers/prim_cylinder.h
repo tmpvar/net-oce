@@ -13,6 +13,16 @@ HANDLER(prim_cylinder, "double, double") {
   double r = fabs(req->argument(0).double_value());
   double h = fabs(req->argument(1).double_value());
 
+  if (r == 0) {
+    HANDLER_ERROR("radius cannot be 0")
+    return true;
+  }
+
+  if (h == 0) {
+    HANDLER_ERROR("height cannot be 0")
+    return true;
+  }
+
   TopoDS_Solid cylinder = BRepPrimAPI_MakeCylinder(
     gp_Ax2(gp_Pnt(0, -h/2, 0), gp_Dir(0, 1, 0), gp_Dir(1, 0, 0)), r, h
   );

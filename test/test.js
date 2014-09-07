@@ -312,3 +312,41 @@ test('display verts (multiple)', function(methods, t) {
     });
   });
 });
+
+test('invalid box dimensions', function(methods, t) {
+  methods.prim_box(0, 1, 1, function(e) {
+    t.ok(e);
+    methods.prim_box(1, 0, 1, function(e) {
+      t.ok(e);
+
+      methods.prim_box(1, 1, 0, function(e) {
+        t.ok(e);
+        t.end();
+      });
+    });
+  });
+});
+
+test('invalid cube dimensions', function(methods, t) {
+  methods.prim_box(0, function(e) {
+    t.ok(e);
+    t.end();
+  });
+});
+
+test('invalid cylinder dimensions', function(methods, t) {
+  methods.prim_cylinder(0, 1, function(e) {
+    t.ok(e);
+    methods.prim_cylinder(0, 1, function(e) {
+      t.ok(e);
+      t.end();
+    });
+  });
+});
+
+test('invalid sphere dimensions', function(methods, t) {
+  methods.prim_sphere(0, function(e) {
+    t.ok(e);
+    t.end();
+  });
+});
