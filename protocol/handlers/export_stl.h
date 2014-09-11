@@ -10,7 +10,7 @@
 #include <BRepBndLib.hxx>
 #include <Bnd_Box.hxx>
 
-struct stl_facet_t {
+typedef struct {
   float nx;
   float ny;
   float nz;
@@ -23,21 +23,20 @@ struct stl_facet_t {
   float x3;
   float y3;
   float z3;
-  uint16_t attr;
-};
+  uint16_t attr = 0;
+} stl_facet_t;
 
 char *write_binary(const char* filename, uint8_t len, const Handle(StlMesh_Mesh)& theMesh, uint32_t *buffer_length) {
+  stl_facet_t stl_facet;
 
-  stl_facet_t facet;
-  memset(&facet, 0, sizeof(stl_facet_t));
-
+  static const uint8_t stl_facet_size = sizeof(float) * 12 + sizeof(uint16_t);
 
   StlMesh_MeshExplorer aMexp (theMesh);
 
   Standard_Integer aNbDomains = theMesh->NbDomains();
   uint32_t total_triangles = theMesh->NbTriangles();
 
-  *buffer_length = 84 + total_triangles*12*sizeof(float) + total_triangles*2;
+  *buffer_length = 84 + total_triangles * stl_facet_size;
 
   char *buffer = (char *)malloc(*buffer_length);
 
@@ -65,20 +64,20 @@ char *write_binary(const char* filename, uint8_t len, const Handle(StlMesh_Mesh)
         Vnorm.SetCoord (0., 0., 0.);
       }
 
-      facet.x1 = x1;
-      facet.y1 = y1;
-      facet.z1 = z1;
+      stl_facet.x1 = x1;
+      stl_facet.y1 = y1;
+      stl_facet.z1 = z1;
 
-      facet.x2 = x2;
-      facet.y2 = y2;
-      facet.z2 = z2;
+      stl_facet.x2 = x2;
+      stl_facet.y2 = y2;
+      stl_facet.z2 = z2;
 
-      facet.x3 = x3;
-      facet.y3 = y3;
-      facet.z3 = z3;
+      stl_facet.x3 = x3;
+      stl_facet.y3 = y3;
+      stl_facet.z3 = z3;
 
-      memcpy(buffer+where, (void *)&facet, sizeof(stl_facet_t));
-      where += sizeof(float) * 12 + sizeof(uint16_t);
+      memcpy(buffer+where, (void *)&stl_facet, stl_facet_size);
+      where += stl_facet_size;
     }
   }
   return buffer;
@@ -132,7 +131,7 @@ HANDLER(export_stl, "string, handle..") {
 
     StlTransfer::BuildIncrementalMesh(
       compoundShape,
-      0.01,
+      0.01, // coefficient
       true,
       mesh
     );
