@@ -6,9 +6,6 @@
 #include <StlMesh_Mesh.hxx>
 #include <StlMesh_MeshExplorer.hxx>
 
-#define MAX2(X, Y)      (  Abs(X) > Abs(Y)? Abs(X) : Abs(Y) )
-#define MAX3(X, Y, Z)   ( MAX2 ( MAX2(X,Y) , Z) )
-
 HANDLER(shape_display, "handle, handle..") {
 
   int argc = req->argument_size();

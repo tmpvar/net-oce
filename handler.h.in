@@ -5,7 +5,6 @@
 
   typedef bool (*handler_fn_t) (NetOCE_Editor *, NetOCE_Request *, NetOCE_Response *);
 
-
   #define HANDLER(name, hint) \
     const char * net_oce_argument_hint_##name = hint;\
     bool net_oce_handler_##name(NetOCE_Editor *editor, NetOCE_Request *req, NetOCE_Response *res)
@@ -19,6 +18,9 @@
     val->set_type(NetOCE_Value::ERROR); \
     val->set_string_value(message);
 
+
+  #define MAX2(X, Y)      (  Abs(X) > Abs(Y)? Abs(X) : Abs(Y) )
+  #define MAX3(X, Y, Z)   ( MAX2 ( MAX2(X,Y) , Z) )
 
 
 /* HEADERS */
