@@ -93,13 +93,18 @@ test('stl export - cube', function(methods, t) {
 
     t.equal(cube.id, 1);
 
-    var out = tmpdir + 'cube.stl';
+    methods.export_stl('cube.stl', cube, function(e, result) {
+      t.ok(result);
 
-    methods.export_stl(out, cube, function(e, result) {
-      t.equal(result, true);
-
-      var obj = stl.toObject(fs.readFileSync(out).toString());
+      var obj = stl.toObject(result);
+      t.equal(obj.description, 'cube.stl');
       t.equal(obj.facets.length, 12);
+
+      var fixture = stl.toObject(
+        fs.readFileSync(pjoin(__dirname, 'fixtures', 'cube.stl'))
+      );
+
+      t.deepEqual(obj, fixture);
 
       t.end();
     });
@@ -115,12 +120,10 @@ test('stl export - 2 cubes', function(methods, t) {
       methods.op_translate(cube2, 20, 0, 0, function(e, cube3) {
         t.equal(cube3.id, 3);
 
-        var out = tmpdir + 'two-cubes.stl';
+        methods.export_stl('two-cubes.stl', cube1, cube2, function(e, result) {
+          t.ok(result);
 
-        methods.export_stl(out, cube1, cube2, function(e, result) {
-          t.equal(result, true);
-
-          var obj = stl.toObject(fs.readFileSync(out).toString());
+          var obj = stl.toObject(result);
           t.equal(obj.facets.length, 24);
 
           t.end();
@@ -157,12 +160,10 @@ test('op_union - 2 cubes', function(methods, t) {
       methods.op_union(cube1, cube2, function(e, unioned) {
         t.equal(unioned.id, 3)
 
-        var out = tmpdir + 'op_union.stl'
+        methods.export_stl('op_union.stl', unioned, function(e, result) {
+          t.ok(result)
 
-        methods.export_stl(out, unioned, function(e, result) {
-          t.equal(result, true)
-
-          var obj = stl.toObject(fs.readFileSync(out).toString());
+          var obj = stl.toObject(result);
           t.equal(obj.facets.length, 28);
           t.end();
         });
@@ -177,12 +178,10 @@ test('op_union - 3 cubes', function(methods, t) {
       methods.prim_box(100, 5, 5, function(e, cube3) {
         methods.op_union(cube1, cube2, cube3, function(e, unioned) {
 
-          var out = tmpdir + 'op_union.3cubes.stl';
+          methods.export_stl('op_union.3cubes.stl', unioned, function(e, result) {
+            t.ok(result);
 
-          methods.export_stl(out, unioned, function(e, result) {
-            t.equal(result, true);
-
-            var obj = stl.toObject(fs.readFileSync(out).toString());
+            var obj = stl.toObject(result);
             t.equal(obj.facets.length, 76);
             t.end();
           });
@@ -222,10 +221,10 @@ test('op_cut - two boxes', function(methods, t) {
 
         var out = tmpdir + 'op_cut.2cubes.stl';
 
-        methods.export_stl(out, cut, function(e, result) {
-          t.equal(result, true);
+        methods.export_stl('op_cut.2cubes.stl', cut, function(e, result) {
+          t.ok(result);
 
-          var obj = stl.toObject(fs.readFileSync(out).toString());
+          var obj = stl.toObject(result);
           t.equal(obj.facets.length, 32);
           t.end();
         });
@@ -350,3 +349,4 @@ test('invalid sphere dimensions', function(methods, t) {
     t.end();
   });
 });
+
