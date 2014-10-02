@@ -233,6 +233,33 @@ test('op_cut - two boxes', function(methods, t) {
   });
 });
 
+test('op_cut - two boxes from one', function(methods, t) {
+  methods.prim_box(100, 100, 10, function(e, cube1) {
+    methods.prim_box(5, 5, 10, function(e, cube2) {
+      methods.op_translate(cube2, 40, 40, 0, function(e, cube2a) {
+
+        methods.prim_box(20, 20, 10, function(e, cube3) {
+
+          methods.op_cut(cube1, cube2a, cube3, function(e, cut) {
+            t.ok(cut.id);
+
+            var out = tmpdir + 'op_cut.3boxes.stl';
+
+            methods.export_stl('op_cut.3boxes.stl', cut, function(e, result) {
+              fs.writeFileSync(out, result);
+              t.ok(result);
+
+              var obj = stl.toObject(result);
+              t.equal(obj.facets.length, 52);
+              t.end();
+            });
+          });
+        });
+      });
+    });
+  });
+});
+
 test('cube - 10 in one tick', function(methods, t) {
   var total = 10;
   var seen = 0;

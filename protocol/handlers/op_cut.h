@@ -2,25 +2,32 @@
 
 #include <BRepAlgoAPI_Cut.hxx>
 
-HANDLER(op_cut, "handle, handle") {
+HANDLER(op_cut, "handle, handle..") {
 
   int argc = req->argument_size();
 
-  if (argc != 2) {
+  if (argc < 2) {
     HANDLER_ERROR("2 arguments required: [cut] object [with] object")
     return true;
   }
 
-  TopoDS_Shape result, a, b;
+  TopoDS_Shape result, b;
 
-  a = editor->getShape(req->argument(0).uint32_value());
-  b = editor->getShape(req->argument(1).uint32_value());
-  if (a.IsNull() || b.IsNull()) {
+  result = editor->getShape(req->argument(0).uint32_value());
+  if (result.IsNull()) {
     HANDLER_ERROR("invalid shape specified")
     return true;
   }
 
-  result = BRepAlgoAPI_Cut(a, b);
+  for (int i=1; i<argc; i++) {
+    b = editor->getShape(req->argument(i).uint32_value());
+    if (b.IsNull()) {
+      HANDLER_ERROR("invalid shape specified")
+      return true;
+    }
+
+    result = BRepAlgoAPI_Cut(result, b);
+  }
 
   NetOCE_Value *val = res->add_value();
   val->set_type(NetOCE_Value::SHAPE_HANDLE);
