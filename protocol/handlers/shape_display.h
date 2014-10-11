@@ -74,6 +74,12 @@ void discretization (const TopoDS_Edge& edge, NetOCE_Value *oce_feature_edges) {
     oce_circle_radius->set_string_value("radius");
     oce_circle_radius->set_double_value(circle.Radius());
 
+    gp_Dir cdir = circle.Axis().Direction();
+    double circle_normal_d[3] = { cdir.X(), cdir.Y(), cdir.Z() };
+    NetOCE_Value *oce_circle_normal = oce_edge->add_item();
+    oce_circle_normal->set_type(NetOCE_Value::DOUBLE_BUFFER);
+    oce_circle_normal->set_string_value("normal");
+    oce_circle_normal->set_bytes_value(circle_normal_d, point_size);
 
   } else {
     fprintf(stderr, "UNHANDLED CURVE TYPE: %i\n", curve_type);
