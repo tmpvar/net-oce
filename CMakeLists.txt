@@ -13,7 +13,7 @@ find_package(OCE)
 find_package(Protobuf)
 include(deps/CMakeLists.libuv.txt)
 
-execute_process(COMMAND node ${CMAKE_SOURCE_DIR}/genhandlers.js ${CMAKE_BINARY_DIR}/handler.h)
+execute_process(COMMAND node ${CMAKE_SOURCE_DIR}/tools/genhandlers.js ${CMAKE_BINARY_DIR}/handler.h)
 
 include_directories(
   ${CMAKE_SOURCE_DIR}

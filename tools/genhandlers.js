@@ -1,7 +1,7 @@
 var fs = require('fs');
 var path = require('path');
 var result = fs.readFileSync(
-  path.join(__dirname, 'handler.h.in'),
+  path.join(__dirname, '..', 'handler.h.in'),
   'utf8'
 );
 
@@ -11,7 +11,7 @@ if (!fs.existsSync(outPath)) {
   fs.mkdirSync(outPath);
 }
 
-var files = fs.readdirSync(path.join(__dirname, 'protocol', 'handlers'));
+var files = fs.readdirSync(path.join(__dirname, '..', 'protocol', 'handlers'));
 
 function r(name, value) {
   result = result.replace('/* ' + name + ' */', value);
