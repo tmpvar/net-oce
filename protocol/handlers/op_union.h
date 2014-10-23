@@ -1,7 +1,7 @@
 #include "handler.h"
 
 #include <BRepAlgoAPI_Fuse.hxx>
-
+#include <ShapeUpgrade_UnifySameDomain.hxx>
 
 
 HANDLER(op_union, "handle, handle..") {
@@ -12,13 +12,6 @@ HANDLER(op_union, "handle, handle..") {
     HANDLER_ERROR("atleast 2 arguments required: object object ...")
     return true;
   }
-
-  // BOPCol_ListOfShape aLS;
-  // aLS.Append(shape1);
-  // aLS.Append(shape2);
-  // BOPAlgo_PaveFiller dsFill;
-  // dsFill.SetArguments(aLS);
-  // dsFill.Perform();
 
   TopoDS_Shape result, a, b;
 
@@ -39,12 +32,15 @@ HANDLER(op_union, "handle, handle..") {
       return true;
     }
 
-    result = BRepAlgoAPI_Fuse(result, c);
+    result = BRepAlgoAPI_Fuse(result, c).Shape();
   }
+
+  ShapeUpgrade_UnifySameDomain unify(result);
+  unify.Build();
 
   NetOCE_Value *val = res->add_value();
   val->set_type(NetOCE_Value::SHAPE_HANDLE);
-  val->set_uint32_value(editor->addShape(result));
+  val->set_uint32_value(editor->addShape(unify.Shape()));
 
   return true;
 }
