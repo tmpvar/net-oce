@@ -13,6 +13,7 @@
 
 #include <gp_Lin.hxx>
 #include <gp_Circ.hxx>
+#include <gp_Elips.hxx>
 #include <Geom_TrimmedCurve.hxx>
 #include <Geom_Line.hxx>
 
@@ -81,6 +82,35 @@ void discretization (const TopoDS_Edge& edge, NetOCE_Value *oce_feature_edges) {
     oce_circle_normal->set_string_value("normal");
     oce_circle_normal->set_bytes_value(circle_normal_d, point_size);
 
+  } else if (curve_type == GeomAbs_Ellipse) {
+    gp_Elips ellipse = geometry_curve_adaptator.Ellipse();
+    gp_Pnt loc = ellipse.Location();
+    gp_Dir edir = ellipse.Axis().Direction();
+
+    oce_edge_type->set_prim_type(NetOCE_Value::ELLIPSE);
+
+    double ellipse_center_d[3] = { loc.X(), loc.Y(), loc.Z() };
+    NetOCE_Value *oce_ellipse_center = oce_edge->add_item();
+    oce_ellipse_center->set_type(NetOCE_Value::DOUBLE_BUFFER);
+    oce_ellipse_center->set_string_value("center");
+    oce_ellipse_center->set_bytes_value(ellipse_center_d, point_size);
+
+    double ellipse_normal_d[3] = { edir.X(), edir.Y(), edir.Z() };
+    NetOCE_Value *oce_ellipse_normal = oce_edge->add_item();
+    oce_ellipse_normal->set_type(NetOCE_Value::DOUBLE_BUFFER);
+    oce_ellipse_normal->set_string_value("normal");
+    oce_ellipse_normal->set_bytes_value(ellipse_normal_d, point_size);
+
+    NetOCE_Value *oce_ellipse_major_radius = oce_edge->add_item();
+    oce_ellipse_major_radius->set_string_value("major_radius");
+    oce_ellipse_major_radius->set_type(NetOCE_Value::DOUBLE);
+    oce_ellipse_major_radius->set_double_value(ellipse.MajorRadius());
+
+    NetOCE_Value *oce_ellipse_minor_radius = oce_edge->add_item();
+    oce_ellipse_minor_radius->set_type(NetOCE_Value::DOUBLE);
+    oce_ellipse_minor_radius->set_string_value("minor_radius");
+    oce_ellipse_minor_radius->set_double_value(ellipse.MinorRadius());
+
   } else {
     fprintf(stderr, "UNHANDLED CURVE TYPE: %i\n", curve_type);
 
@@ -98,7 +128,6 @@ void discretization (const TopoDS_Edge& edge, NetOCE_Value *oce_feature_edges) {
   }
 
   /*
-    GeomAbs_Ellipse:
     GeomAbs_Hyperbola:
     GeomAbs_Parabola:
     GeomAbs_BezierCurve:
