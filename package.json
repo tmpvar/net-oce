@@ -2,6 +2,9 @@
   "name": "net-oce",
   "version": "0.0.0",
   "description": "libuv / protobuf wrapper around oce",
+  "scripts": {
+    "test" : "node test/test.js"
+  },
   "dependencies": {
     "duplexer": "^0.1.1",
     "net-oce-protocol": "solids/net-oce-protocol",
