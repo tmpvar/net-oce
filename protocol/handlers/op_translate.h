@@ -26,9 +26,13 @@ HANDLER(op_translate, "handle, double, double, double") {
   BRepBuilderAPI_Transform brep(shape, trsf, Standard_True);
   brep.Build();
 
-  NetOCE_Value *val = res->add_value();
-  val->set_type(NetOCE_Value::SHAPE_HANDLE);
-  val->set_uint32_value(editor->addShape(req, brep.Shape()));
+  shape_id_t shape_id = editor->addShape(req, brep.Shape());
 
-  return true;
+  if (!req->has_shape_id()) {
+    NetOCE_Value *val = res->add_value();
+    val->set_type(NetOCE_Value::SHAPE_HANDLE);
+    val->set_uint32_value(shape_id);
+    return true;
+  }
+  return false;
 }

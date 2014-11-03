@@ -37,5 +37,5 @@ bool NetOCE_Editor::handleRequest(NetOCE_Request *request, NetOCE_Response *resp
   if (r && !response->has_seq()) {
     response->set_seq(request->seq());
   }
-  return true;
+  return r;
 }

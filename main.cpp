@@ -120,9 +120,11 @@ bool parse(uint8_t *buf, ssize_t size) {
 
         req.ParseFromArray(current, parser_message_size);
 
-        editor.handleRequest(&req, &res);
+        bool do_respond = editor.handleRequest(&req, &res);
         req.Clear();
-        respond(res);
+        if (do_respond) {
+          respond(res);
+        }
         res.Clear();
 
         parser_message_location = 0;

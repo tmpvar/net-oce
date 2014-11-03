@@ -27,10 +27,15 @@ HANDLER(prim_cylinder, "double, double") {
     gp_Ax2(gp_Pnt(0, -h/2, 0), gp_Dir(0, 1, 0), gp_Dir(1, 0, 0)), r, h
   );
 
-  NetOCE_Value *val = res->add_value();
-  val->set_type(NetOCE_Value::SHAPE_HANDLE);
-  val->set_uint32_value(editor->addShape(req, cylinder));
+  shape_id_t shape_id = editor->addShape(req, cylinder);
 
-  return true;
+  if (!req->has_shape_id()) {
+    NetOCE_Value *val = res->add_value();
+    val->set_type(NetOCE_Value::SHAPE_HANDLE);
+    val->set_uint32_value(shape_id);
+    return true;
+  }
+
+  return false;
 }
 

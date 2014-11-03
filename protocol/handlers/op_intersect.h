@@ -21,10 +21,14 @@ HANDLER(op_intersect, "handle, handle") {
   }
 
   result = BRepAlgoAPI_Common(a, b);
+  shape_id_t shape_id = editor->addShape(req, result);
 
-  NetOCE_Value *val = res->add_value();
-  val->set_type(NetOCE_Value::SHAPE_HANDLE);
-  val->set_uint32_value(editor->addShape(req, result));
+  if (!req->has_shape_id()) {
+    NetOCE_Value *val = res->add_value();
+    val->set_type(NetOCE_Value::SHAPE_HANDLE);
+    val->set_uint32_value(shape_id);
+    return true;
+  }
 
-  return true;
+  return false;
 }

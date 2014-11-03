@@ -18,9 +18,14 @@ HANDLER(prim_sphere, "double") {
 
   TopoDS_Solid sphere = BRepPrimAPI_MakeSphere(gp_Pnt(0, 0, 0), r);
 
-  NetOCE_Value *val = res->add_value();
-  val->set_type(NetOCE_Value::SHAPE_HANDLE);
-  val->set_uint32_value(editor->addShape(req, sphere));
+  shape_id_t shape_id = editor->addShape(req, sphere);
 
-  return true;
+  if (!req->has_shape_id()) {
+    NetOCE_Value *val = res->add_value();
+    val->set_type(NetOCE_Value::SHAPE_HANDLE);
+    val->set_uint32_value(shape_id);
+    return true;
+  }
+
+  return false;
 }
