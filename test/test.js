@@ -104,7 +104,6 @@ test('stl export - cube', function(methods, t) {
         fs.readFileSync(pjoin(__dirname, 'fixtures', 'cube.stl'))
       );
 
-      console.log(obj.facets.map(function(f){ return f.normal; }));
       t.deepEqual(obj, fixture);
 
       t.end();
