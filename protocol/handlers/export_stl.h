@@ -54,15 +54,19 @@ char *write_binary(const char* filename, uint8_t len, const Handle(StlMesh_Mesh)
     for (aMexp.InitTriangle (nbd); aMexp.MoreTriangle(); aMexp.NextTriangle()) {
       aMexp.TriangleVertices ( x1, y1, z1, x2, y2, z2, x3, y3, z3);
 
-      gp_XYZ Vect12 ((x2-x1), (y2-y1), (z2-z1));
-      gp_XYZ Vect13 ((x3-x1), (y3-y1), (z3-z1));
-      gp_XYZ Vnorm = Vect12 ^ Vect13;
-      Standard_Real Vmodul = Vnorm.Modulus ();
-      if (Vmodul > gp::Resolution()) {
-        Vnorm.Divide(Vmodul);
+      gp_XYZ V ((x2-x1), (y2-y1), (z2-z1));
+      gp_XYZ W ((x3-x1), (y3-y1), (z3-z1));
+      gp_XYZ normal = V ^ W;
+      Standard_Real mod = normal.Modulus ();
+      if (mod > gp::Resolution()) {
+        normal.Divide(mod);
       } else {
-        Vnorm.SetCoord (0., 0., 0.);
+        normal.SetCoord (0., 0., 0.);
       }
+
+      stl_facet.nx = normal.X();
+      stl_facet.ny = normal.Y();
+      stl_facet.nz = normal.Z();
 
       stl_facet.x1 = x1;
       stl_facet.y1 = y1;

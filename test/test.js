@@ -18,9 +18,9 @@ function setup(fn) {
   });
 
   child.stderr.on('data', function(d) {
-    // d.toString().split('\n').forEach(function(line) {
-    //   console.log('>', line);
-    // });
+    d.toString().split('\n').forEach(function(line) {
+      console.log('>', line);
+    });
   });
 
   process.nextTick(function() {
@@ -104,6 +104,7 @@ test('stl export - cube', function(methods, t) {
         fs.readFileSync(pjoin(__dirname, 'fixtures', 'cube.stl'))
       );
 
+      console.log(obj.facets.map(function(f){ return f.normal; }));
       t.deepEqual(obj, fixture);
 
       t.end();
