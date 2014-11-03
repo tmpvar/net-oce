@@ -9,7 +9,7 @@ HANDLER(op_copy, "handle") {
     return true;
   }
 
-  uint32_t handle = req->argument(0).uint32_value();
+  shape_id_t handle = req->argument(0).uint32_value();
 
   TopoDS_Shape shape = editor->getShape(handle);
   if (shape.IsNull()) {
