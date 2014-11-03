@@ -20,7 +20,7 @@ HANDLER(prim_sphere, "double") {
 
   NetOCE_Value *val = res->add_value();
   val->set_type(NetOCE_Value::SHAPE_HANDLE);
-  val->set_uint32_value(editor->addShape(sphere));
+  val->set_uint32_value(editor->addShape(req, sphere));
 
   return true;
 }

@@ -40,7 +40,7 @@ HANDLER(op_union, "handle, handle..") {
 
   NetOCE_Value *val = res->add_value();
   val->set_type(NetOCE_Value::SHAPE_HANDLE);
-  val->set_uint32_value(editor->addShape(unify.Shape()));
+  val->set_uint32_value(editor->addShape(req, unify.Shape()));
 
   return true;
 }

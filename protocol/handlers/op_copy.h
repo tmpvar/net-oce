@@ -22,7 +22,7 @@ HANDLER(op_copy, "handle") {
 
   NetOCE_Value *val = res->add_value();
   val->set_type(NetOCE_Value::SHAPE_HANDLE);
-  val->set_uint32_value(editor->addShape(builder.Shape()));
+  val->set_uint32_value(editor->addShape(req, builder.Shape()));
 
   return true;
 }

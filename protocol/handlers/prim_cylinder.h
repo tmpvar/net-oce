@@ -29,7 +29,7 @@ HANDLER(prim_cylinder, "double, double") {
 
   NetOCE_Value *val = res->add_value();
   val->set_type(NetOCE_Value::SHAPE_HANDLE);
-  val->set_uint32_value(editor->addShape(cylinder));
+  val->set_uint32_value(editor->addShape(req, cylinder));
 
   return true;
 }

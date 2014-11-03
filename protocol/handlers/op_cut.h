@@ -31,7 +31,7 @@ HANDLER(op_cut, "handle, handle..") {
 
   NetOCE_Value *val = res->add_value();
   val->set_type(NetOCE_Value::SHAPE_HANDLE);
-  val->set_uint32_value(editor->addShape(result));
+  val->set_uint32_value(editor->addShape(req, result));
 
   return true;
 }

@@ -17,8 +17,18 @@ class NetOCE_Editor {
 
     bool handleRequest(NetOCE_Request *request, NetOCE_Response *response);
 
-    uint32_t addShape(TopoDS_Shape shape) {
-      this->shape_index++;
+    uint32_t addShape(NetOCE_Request *request, TopoDS_Shape shape) {
+      if (request->has_shape_id()) {
+        this->shape_index = request->shape_id();
+      } else {
+        this->shape_index++;
+      }
+
+      if (this->shapes->count(this->shape_index)) {
+        TopoDS_Shape shape = this->shapes->at(this->shape_index);
+        shape.Nullify();
+        this->shapes->erase(this->shape_index);
+      }
 
       this->shapes->emplace(this->shape_index, shape);
 
@@ -34,11 +44,6 @@ class NetOCE_Editor {
       } else {
         return it->second;
       }
-    }
-
-    void setShape(uint32_t handle, TopoDS_Shape shape) {
-      // TODO: we should probably unref the original
-      this->shapes->at(handle) = shape;
     }
 
     unordered_map<uint32_t, TopoDS_Shape> *shapes;

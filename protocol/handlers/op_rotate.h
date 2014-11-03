@@ -32,7 +32,7 @@ HANDLER(op_rotate, "handle, double, double, double") {
 
   NetOCE_Value *val = res->add_value();
   val->set_type(NetOCE_Value::SHAPE_HANDLE);
-  val->set_uint32_value(editor->addShape(transform.Shape()));
+  val->set_uint32_value(editor->addShape(req, transform.Shape()));
 
   return true;
 }
