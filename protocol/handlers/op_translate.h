@@ -9,7 +9,7 @@ HANDLER(op_translate, "handle, double, double, double") {
     return true;
   }
 
-  uint32_t handle = req->argument(0).uint32_value();
+  shape_id_t handle = req->argument(0).uint32_value();
   double x = req->argument(1).double_value();
   double y = req->argument(2).double_value();
   double z = req->argument(3).double_value();

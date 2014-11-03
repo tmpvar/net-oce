@@ -2,7 +2,7 @@
 #include "handler.h"
 
 NetOCE_Editor::NetOCE_Editor() {
-  this->shapes = new unordered_map<uint32_t, TopoDS_Shape>();
+  this->shapes = new unordered_map<shape_id_t, TopoDS_Shape>();
   this->shape_index = 0;
 }
 

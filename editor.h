@@ -6,6 +6,8 @@
 #include <TopoDS_Shape.hxx>
 #include "oce.pb.h"
 
+typedef uint32_t shape_id_t;
+
 using namespace std;
 
 class NetOCE_Editor {
@@ -17,7 +19,7 @@ class NetOCE_Editor {
 
     bool handleRequest(NetOCE_Request *request, NetOCE_Response *response);
 
-    uint32_t addShape(NetOCE_Request *request, TopoDS_Shape shape) {
+    shape_id_t addShape(NetOCE_Request *request, TopoDS_Shape shape) {
       if (request->has_shape_id()) {
         this->shape_index = request->shape_id();
       } else {
@@ -35,7 +37,7 @@ class NetOCE_Editor {
       return this->shape_index;
     }
 
-    TopoDS_Shape getShape(uint32_t handle) {
+    TopoDS_Shape getShape(shape_id_t handle) {
       if (this->shapes->count(handle)) {
         return this->shapes->at(handle);
 
@@ -47,9 +49,9 @@ class NetOCE_Editor {
       }
     }
 
-    unordered_map<uint32_t, TopoDS_Shape> *shapes;
+    unordered_map<shape_id_t, TopoDS_Shape> *shapes;
   protected:
-    uint32_t shape_index;
+    shape_id_t shape_index;
 };
 
 

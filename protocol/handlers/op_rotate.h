@@ -10,7 +10,7 @@ HANDLER(op_rotate, "handle, double, double, double") {
   }
 
 
-  uint32_t handle = req->argument(0).uint32_value();
+  shape_id_t handle = req->argument(0).uint32_value();
   double x = req->argument(1).double_value() * M_PI/180;
   double y = req->argument(2).double_value() * M_PI/180;
   double z = req->argument(3).double_value() * M_PI/180;
