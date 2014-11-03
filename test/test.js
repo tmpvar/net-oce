@@ -18,9 +18,9 @@ function setup(fn) {
   });
 
   child.stderr.on('data', function(d) {
-    d.toString().split('\n').forEach(function(line) {
-      console.log('>', line);
-    });
+    // d.toString().split('\n').forEach(function(line) {
+    //   console.log('>', line);
+    // });
   });
 
   process.nextTick(function() {

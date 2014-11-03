@@ -36,13 +36,14 @@ class NetOCE_Editor {
     }
 
     TopoDS_Shape getShape(uint32_t handle) {
-      unordered_map<uint32_t, TopoDS_Shape>::iterator it = this->shapes->find(handle);
-      if (it == this->shapes->end()) {
-        TopoDS_Shape ret;
-        ret.Nullify();
-        return ret;
+      if (this->shapes->count(handle)) {
+        return this->shapes->at(handle);
+
+      // signal a not-found back to the caller
       } else {
-        return it->second;
+        TopoDS_Shape null;
+        null.Nullify();
+        return null;
       }
     }
 
