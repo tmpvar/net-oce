@@ -164,7 +164,7 @@ test('op_union - 2 cubes', function(methods, t) {
           t.ok(result)
 
           var obj = stl.toObject(result);
-          t.equal(obj.facets.length, 28);
+          t.equal(obj.facets.length, 12);
           t.end();
         });
       });
