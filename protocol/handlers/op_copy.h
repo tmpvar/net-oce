@@ -21,12 +21,8 @@ HANDLER(op_copy, "handle") {
   builder.Perform(shape);
   shape_id_t shape_id = editor->addShape(req, builder.Shape());
 
-  if (!req->has_shape_id()) {
-    NetOCE_Value *val = res->add_value();
-    val->set_type(NetOCE_Value::SHAPE_HANDLE);
-    val->set_uint32_value(shape_id);
-    return true;
-  }
-
-  return false;
+  NetOCE_Value *val = res->add_value();
+  val->set_type(NetOCE_Value::SHAPE_HANDLE);
+  val->set_uint32_value(shape_id);
+  return true;
 }

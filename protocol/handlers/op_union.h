@@ -39,12 +39,8 @@ HANDLER(op_union, "handle, handle..") {
   unify.Build();
   shape_id_t shape_id = editor->addShape(req, unify.Shape());
 
-  if (!req->has_shape_id()) {
-    NetOCE_Value *val = res->add_value();
-    val->set_type(NetOCE_Value::SHAPE_HANDLE);
-    val->set_uint32_value(shape_id);
-    return true;
-  }
-
-  return false;
+  NetOCE_Value *val = res->add_value();
+  val->set_type(NetOCE_Value::SHAPE_HANDLE);
+  val->set_uint32_value(shape_id);
+  return true;
 }

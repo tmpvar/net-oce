@@ -23,12 +23,8 @@ HANDLER(prim_cube, "double") {
 
   bool has_shape_id = req->has_shape_id();
 
-  if (!has_shape_id) {
-    NetOCE_Value *val = res->add_value();
-    val->set_type(NetOCE_Value::SHAPE_HANDLE);
-    val->set_uint32_value(shape_id);
-    return true;
-  }
-
-  return false;
+  NetOCE_Value *val = res->add_value();
+  val->set_type(NetOCE_Value::SHAPE_HANDLE);
+  val->set_uint32_value(shape_id);
+  return true;
 }
