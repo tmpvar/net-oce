@@ -21,7 +21,12 @@ void discretization (const TopoDS_Edge& edge, NetOCE_Value *oce_feature_edges) {
 
   Standard_Real curve_start = 0, curve_end = 0;
   Handle_Geom_Curve curve = BRep_Tool::Curve (edge, curve_start, curve_end);
-  assert (!curve.IsNull ());
+
+  if (curve.IsNull ()) {
+    fprintf(stderr, "shape edge could not be discretised\n");
+    return;
+  }
+
   GeomAdaptor_Curve geometry_curve_adaptator (curve);
 
   GeomAbs_CurveType curve_type = geometry_curve_adaptator.GetType();
