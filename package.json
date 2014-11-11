@@ -3,7 +3,8 @@
   "version": "0.0.0",
   "description": "libuv / protobuf wrapper around oce",
   "scripts": {
-    "test" : "node test/test.js"
+    "test": "node test/test.js",
+    "dev" : "nodemon -e js,cpp,h,in,json -x tools/monitor.sh -w main.cpp -w editor.cpp -w editor.h -w test -w protocol -w tools"
   },
   "dependencies": {
     "duplexer": "^0.1.1",
@@ -12,6 +13,7 @@
     "protocol-buffers": "^2.3.3"
   },
   "devDependencies": {
+    "nodemon": "^1.2.1",
     "stl": "^1.1.1",
     "tape": "^2.14.0"
   }
