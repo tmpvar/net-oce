@@ -16,6 +16,8 @@
 #include <gp_Elips.hxx>
 #include <Geom_TrimmedCurve.hxx>
 #include <Geom_Line.hxx>
+#include <Geom_BSplineCurve.hxx>
+#include <TColgp_Array1OfPnt.hxx>
 
 void discretization (const TopoDS_Edge& edge, NetOCE_Value *oce_feature_edges) {
 
@@ -115,7 +117,42 @@ void discretization (const TopoDS_Edge& edge, NetOCE_Value *oce_feature_edges) {
     oce_ellipse_minor_radius->set_type(NetOCE_Value::DOUBLE);
     oce_ellipse_minor_radius->set_string_value("minor_radius");
     oce_ellipse_minor_radius->set_double_value(ellipse.MinorRadius());
+  } else if (curve_type == GeomAbs_Hyperbola) {
+    fprintf(stderr, "not implemented: GeomAbs_Hyperbola\n");
+  } else if (curve_type == GeomAbs_Parabola) {
+    fprintf(stderr, "not implemented: GeomAbs_Parabola\n");
+  } else if (curve_type == GeomAbs_BezierCurve) {
+    fprintf(stderr, "not implemented: GeomAbs_BezierCurve\n");
+  } else if (curve_type == GeomAbs_BSplineCurve) {
+    fprintf(stderr, "not implemented: GeomAbs_BSplineCurve\n");
+    Handle_Geom_BSplineCurve spline = geometry_curve_adaptator.BSpline();
 
+    fprintf(stderr, "knots:\n");
+    TColStd_Array1OfReal knotArray(1, spline->NbKnots());
+    spline->Knots(knotArray);
+    for (int i = knotArray.Lower(); i <= knotArray.Upper(); i++) {
+      fprintf(stderr, " (i: %d, value: %f)", i, knotArray.Value(i));
+    }
+    fprintf(stderr, "\n");
+
+    fprintf(stderr, "weights:\n");
+    TColStd_Array1OfReal weightArray(1, spline->NbPoles()); // there is no NbWeights(), because there's a weight for every control point aka pole
+    spline->Weights(weightArray);
+    for (int i = weightArray.Lower(); i <= weightArray.Upper(); i++) {
+      fprintf(stderr, " (i: %d, value: %f)", i, weightArray.Value(i));
+    }
+    fprintf(stderr, "\n");
+
+    fprintf(stderr, "control points:\n");
+    TColgp_Array1OfPnt controlPointArray(1, spline->NbPoles());
+    spline->Poles(controlPointArray);
+    for (int i = controlPointArray.Lower(); i <= controlPointArray.Upper(); i++) {
+      gp_Pnt p = controlPointArray.Value(i);
+      fprintf(stderr, " (%f, %f, %f)", p.X(), p.Y(), p.Z());
+    }
+    fprintf(stderr, "\n");
+  } else if (curve_type == GeomAbs_OtherCurve) {
+    fprintf(stderr, "not implemented: GeomAbs_OtherCurve\n");
   } else {
     fprintf(stderr, "UNHANDLED CURVE TYPE: %i\n", curve_type);
 
