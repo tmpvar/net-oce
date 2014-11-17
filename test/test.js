@@ -12,16 +12,19 @@ var exe = pjoin(tdir, '..', 'out/bin/net-oce');
 
 var stl = require('stl');
 
-function setup(fn) {
+function setup(debug, fn) {
   var child = spawn(exe, [], {
     stdio : 'pipe'
   });
 
-  child.stderr.on('data', function(d) {
-    // d.toString().split('\n').forEach(function(line) {
-    //   console.log('>', line);
-    // });
-  });
+
+  if (debug) {
+    child.stderr.on('data', function(d) {
+      d.toString().split('\n').forEach(function(line) {
+        console.log('>', line);
+      });
+    });
+  }
 
   process.nextTick(function() {
     fn(duplex(child.stdin, child.stdout))
@@ -30,8 +33,8 @@ function setup(fn) {
   return child;
 }
 
-function test(name, fn) {
-  var child = setup(function(stream) {
+function test(name, fn, debug) {
+  var child = setup(debug, function(stream) {
     createClient(stream, function(e, methods) {
       if (e) throw e;
 
@@ -277,7 +280,7 @@ test('cube - 10 in one tick', function(methods, t) {
 });
 
 _test('partial length message', function(t) {
-  var child = setup(function(stream) {
+  var child = setup(false, function(stream) {
 
     stream.once('data', function(d) {
       t.ok(d);
@@ -376,4 +379,18 @@ test('invalid sphere dimensions', function(methods, t) {
     t.end();
   });
 });
+
+test('issue69', function(o, t) {
+  o.prim_cylinder(2.0,4.49,3, function(e, first) {
+    o.op_rotate(first, 45, 0, 0, function(e, a) {
+      o.prim_cylinder(3,1, function(e, b) {
+        o.op_cut(b, a, function(e, r) {
+          o.shape_display(r, function(e, r) {
+            t.end();
+          });
+        });
+      });
+    });
+  });
+}, true);
 
