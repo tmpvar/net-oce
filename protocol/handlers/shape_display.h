@@ -19,6 +19,80 @@
 #include <Geom_BSplineCurve.hxx>
 #include <TColgp_Array1OfPnt.hxx>
 
+#include <GeomConvert_BSplineCurveToBezierCurve.hxx>
+#include <Geom_BezierCurve.hxx>
+
+void splitSpline (Handle_Geom_BSplineCurve spline) {
+  GeomConvert_BSplineCurveToBezierCurve crt(spline);
+  int arcs = crt.NbArcs();
+
+  fprintf(stderr, "total arcs found: (%d)\n", arcs);
+
+  for (int i = 1; i <= arcs; i++) {
+    Handle_Geom_BezierCurve bezier = crt.Arc(i);
+
+    int poles = bezier->NbPoles();
+    int degree = bezier->Degree();
+
+    fprintf(stderr, "arc number: (%i)\n", i);
+    fprintf(stderr, "poles: (%i)\n", poles);
+    fprintf(stderr, "degree: (%i)\n", degree);
+
+    gp_Pnt p1 = bezier->Pole(1);
+    gp_Pnt p2 = bezier->Pole(2);
+    gp_Pnt p3 = bezier->Pole(3);
+    gp_Pnt p4 = bezier->Pole(4);
+
+    fprintf(stderr, " (%f, %f, %f)", p1.X(), p1.Y(), p1.Z());
+    fprintf(stderr, " (%f, %f, %f)", p2.X(), p2.Y(), p2.Z());
+    fprintf(stderr, " (%f, %f, %f)", p3.X(), p3.Y(), p3.Z());
+    fprintf(stderr, " (%f, %f, %f)", p4.X(), p4.Y(), p4.Z());
+
+  //   if (degree == 3) {
+  //     if (poles != 4) {
+  //       fprintf(stderr, " degree 3 error: poles: (%d)", poles);
+  //     }
+
+  //     gp_Pnt p1 = bezier->Pole(1);
+  //     gp_Pnt p2 = bezier->Pole(2);
+  //     gp_Pnt p3 = bezier->Pole(3);
+  //     gp_Pnt p4 = bezier->Pole(4);
+
+  //     if (i == 1) {
+  //       fprintf(stderr, " (%f, %f, %f)", p1.X(), p1.Y(), p1.Z());
+  //       fprintf(stderr, " (%f, %f, %f)", p2.X(), p2.Y(), p2.Z());
+  //       fprintf(stderr, " (%f, %f, %f)", p3.X(), p3.Y(), p3.Z());
+  //       fprintf(stderr, " (%f, %f, %f)", p4.X(), p4.Y(), p4.Z());
+  //     }
+  //     else {
+  //       fprintf(stderr, " (%f, %f, %f)", p3.X(), p3.Y(), p3.Z());
+  //       fprintf(stderr, " (%f, %f, %f)", p4.X(), p4.Y(), p4.Z());
+  //     }
+  //   }
+  //   else if (degree == 2) {
+  //     if (poles != 3) {
+  //       fprintf(stderr, " degree 2 error: poles: (%d)", poles);
+  //     }
+
+  //     gp_Pnt p1 = bezier->Pole(1);
+  //     gp_Pnt p2 = bezier->Pole(2);
+  //     gp_Pnt p3 = bezier->Pole(3);
+
+  //     if (i == 1) {
+  //       fprintf(stderr, " (%f, %f, %f)", p1.X(), p1.Y(), p1.Z());
+  //       fprintf(stderr, " (%f, %f, %f)", p2.X(), p2.Y(), p2.Z());
+  //       fprintf(stderr, " (%f, %f, %f)", p3.X(), p3.Y(), p3.Z());
+  //     }
+  //     else {
+  //       fprintf(stderr, " (%f, %f, %f)", p3.X(), p3.Y(), p3.Z());
+  //     }
+  //   }
+  //   else {
+  //     fprintf(stderr, " degree error: degree: (%d)", degree);
+  //   }
+  }
+}
+
 void discretization (const TopoDS_Edge& edge, NetOCE_Value *oce_feature_edges) {
 
   Standard_Real curve_start = 0, curve_end = 0;
@@ -124,33 +198,37 @@ void discretization (const TopoDS_Edge& edge, NetOCE_Value *oce_feature_edges) {
   } else if (curve_type == GeomAbs_BezierCurve) {
     fprintf(stderr, "not implemented: GeomAbs_BezierCurve\n");
   } else if (curve_type == GeomAbs_BSplineCurve) {
-    fprintf(stderr, "not implemented: GeomAbs_BSplineCurve\n");
+  //fprintf(stderr, "not implemented: GeomAbs_BSplineCurve\n");
     Handle_Geom_BSplineCurve spline = geometry_curve_adaptator.BSpline();
 
-    fprintf(stderr, "knots:\n");
-    TColStd_Array1OfReal knotArray(1, spline->NbKnots());
-    spline->Knots(knotArray);
-    for (int i = knotArray.Lower(); i <= knotArray.Upper(); i++) {
-      fprintf(stderr, " (i: %d, value: %f)", i, knotArray.Value(i));
-    }
-    fprintf(stderr, "\n");
+    fprintf(stderr, "\nsplitSpline started:\n");
+    splitSpline(spline);
+    fprintf(stderr, "\n-------------------\n");
 
-    fprintf(stderr, "weights:\n");
-    TColStd_Array1OfReal weightArray(1, spline->NbPoles()); // there is no NbWeights(), because there's a weight for every control point aka pole
-    spline->Weights(weightArray);
-    for (int i = weightArray.Lower(); i <= weightArray.Upper(); i++) {
-      fprintf(stderr, " (i: %d, value: %f)", i, weightArray.Value(i));
-    }
-    fprintf(stderr, "\n");
+    // fprintf(stderr, "knots:\n");
+    // TColStd_Array1OfReal knotArray(1, spline->NbKnots());
+    // spline->Knots(knotArray);
+    // for (int i = knotArray.Lower(); i <= knotArray.Upper(); i++) {
+    //   fprintf(stderr, " (i: %d, value: %f)", i, knotArray.Value(i));
+    // }
+    // fprintf(stderr, "\n");
 
-    fprintf(stderr, "control points:\n");
-    TColgp_Array1OfPnt controlPointArray(1, spline->NbPoles());
-    spline->Poles(controlPointArray);
-    for (int i = controlPointArray.Lower(); i <= controlPointArray.Upper(); i++) {
-      gp_Pnt p = controlPointArray.Value(i);
-      fprintf(stderr, " (%f, %f, %f)", p.X(), p.Y(), p.Z());
-    }
-    fprintf(stderr, "\n");
+    // fprintf(stderr, "weights:\n");
+    // TColStd_Array1OfReal weightArray(1, spline->NbPoles()); // there is no NbWeights(), because there's a weight for every control point aka pole
+    // spline->Weights(weightArray);
+    // for (int i = weightArray.Lower(); i <= weightArray.Upper(); i++) {
+    //   fprintf(stderr, " (i: %d, value: %f)", i, weightArray.Value(i));
+    // }
+    // fprintf(stderr, "\n");
+
+    // fprintf(stderr, "control points:\n");
+    // TColgp_Array1OfPnt controlPointArray(1, spline->NbPoles());
+    // spline->Poles(controlPointArray);
+    // for (int i = controlPointArray.Lower(); i <= controlPointArray.Upper(); i++) {
+    //   gp_Pnt p = controlPointArray.Value(i);
+    //   fprintf(stderr, " (%f, %f, %f)", p.X(), p.Y(), p.Z());
+    // }
+    // fprintf(stderr, "\n");
   } else if (curve_type == GeomAbs_OtherCurve) {
     fprintf(stderr, "not implemented: GeomAbs_OtherCurve\n");
   } else {
